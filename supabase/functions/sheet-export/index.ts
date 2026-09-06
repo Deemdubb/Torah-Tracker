@@ -10,7 +10,9 @@
 // in Settings, which makes the old link stop working. Only reading is possible through this address.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+// Supabase fills these in automatically. Newer projects call the admin key SUPABASE_SECRET_KEY, older ones SUPABASE_SERVICE_ROLE_KEY.
+const adminKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_SECRET_KEY') || '';
+const sb = createClient(Deno.env.get('SUPABASE_URL')!, adminKey);
 
 const ONES = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט'];
 const TENS = ['', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ'];
