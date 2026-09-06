@@ -101,6 +101,7 @@ export function createSupabaseBackend(url, key) {
         return !!data?.session;
       },
       async updatePassword(password) { check(await sb.auth.updateUser({ password })); },
+      async resendConfirmation(email) { check(await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: redirectTo() } })); },
       async signInWithGoogle() { check(await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectTo() } })); },
       async signOut() { await sb.auth.signOut(); },
     },

@@ -65,7 +65,9 @@ export const STRINGS = {
     useMagicLink: 'שלח לי קישור כניסה במייל במקום', usePassword: 'כניסה עם סיסמה במקום',
     passwordTooShort: 'הסיסמה צריכה להיות באורך 6 תווים לפחות', checkEmailConfirm: 'החשבון נוצר. בדוק את האימייל כדי לאשר אותו, ואז היכנס.',
     setPassword: 'הגדר או שנה סיסמה', newPassword: 'סיסמה חדשה', confirmPassword: 'אימות סיסמה', passwordMismatch: 'הסיסמאות לא זהות',
-    passwordSaved: 'הסיסמה נשמרה. מעכשיו אפשר להיכנס עם אימייל וסיסמה בכל מכשיר.', savePassword: 'שמור סיסמה', required: 'שדה חובה', notListsFile: 'הקובץ הזה אינו קובץ רשימות',
+    passwordSaved: 'הסיסמה נשמרה. מעכשיו אפשר להיכנס עם אימייל וסיסמה בכל מכשיר.', savePassword: 'שמור סיסמה',
+    noAccountYet: 'חדש כאן? צור חשבון', haveAccount: 'יש לך כבר חשבון? היכנס', createAccountSubtitle: 'בחר אימייל וסיסמה',
+    verifyWaiting: 'מחכים שתאשר את האימייל שלך. שלחנו קישור אל', verifyThenSignIn: 'אחרי שתלחץ על הקישור, היכנס כאן.', resend: 'שלח שוב', required: 'שדה חובה', notListsFile: 'הקובץ הזה אינו קובץ רשימות',
   },
   en: {
     brandMain: 'Torah Progress Tracker', brandSub: 'מעקב תורה',
@@ -115,7 +117,9 @@ export const STRINGS = {
     useMagicLink: 'Email me a sign-in link instead', usePassword: 'Sign in with a password instead',
     passwordTooShort: 'The password needs at least 6 characters', checkEmailConfirm: 'Account created. Check your email to confirm it, then sign in.',
     setPassword: 'Set or change password', newPassword: 'New password', confirmPassword: 'Confirm password', passwordMismatch: 'The passwords do not match',
-    passwordSaved: 'Password saved. From now on you can sign in with email and password on any device.', savePassword: 'Save password', required: 'Required', notListsFile: 'This is not a lists file',
+    passwordSaved: 'Password saved. From now on you can sign in with email and password on any device.', savePassword: 'Save password',
+    noAccountYet: 'New here? Create an account', haveAccount: 'Already have an account? Sign in', createAccountSubtitle: 'Choose an email and a password',
+    verifyWaiting: 'Waiting for you to verify your email. We sent a link to', verifyThenSignIn: 'After you click it, sign in here.', resend: 'Resend', required: 'Required', notListsFile: 'This is not a lists file',
   },
 };
 

@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
     signInWithPassword: (email, password) => db.auth.signInWithPassword(email, password),
     signUpWithPassword: (email, password) => db.auth.signUpWithPassword(email, password),
     updatePassword: (password) => db.auth.updatePassword(password),
+    resendConfirmation: (email) => db.auth.resendConfirmation(email),
     signInWithGoogle: () => db.auth.signInWithGoogle(),
     signOut: async () => { await db.auth.signOut(); setUser(null); },
   }), [user]);

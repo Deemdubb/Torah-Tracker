@@ -48,6 +48,7 @@ export function createLocalBackend() {
       async signInWithPassword() {},
       async signUpWithPassword() { return true; },
       async updatePassword() {},
+      async resendConfirmation() {},
       async signInWithGoogle() {},
       async signOut() {},
     },
