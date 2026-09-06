@@ -12,14 +12,44 @@ const writeQueue = (q) => localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
 const isNetworkError = (e) => /fetch|network|offline|load failed/i.test(String(e?.message || e));
 const check = ({ data, error }) => { if (error) throw error; return data; };
 
+// A request that hangs is treated as failed after this long, so the app can fall back to saved data.
+const REQUEST_TIMEOUT_MS = 20000;
+const fetchWithTimeout = (input, init = {}) => {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS);
+  const signal = init.signal ? AbortSignal.any([init.signal, ctrl.signal]) : ctrl.signal;
+  return fetch(input, { ...init, signal }).finally(() => clearTimeout(timer));
+};
+
 export function createSupabaseBackend(url, key) {
-  const sb = createClient(url, key);
+  const sb = createClient(url, key, {
+    // The library's default "navigator lock" is known to stall in Safari on iPhone. One app tab at a time is fine for us.
+    auth: { lock: (_name, _timeout, fn) => fn(), persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+    global: { fetch: typeof AbortSignal !== 'undefined' && AbortSignal.any ? fetchWithTimeout : undefined },
+  });
   const redirectTo = () => window.location.origin + window.location.pathname;
 
-  async function withProfile(user) {
+  // The user's role is remembered on the device so the app can open at once; the real role is checked in the background.
+  const roleKey = (id) => `tt.role.${id}`;
+  const listeners = new Set();
+  const notify = (u) => listeners.forEach((cb) => { try { cb(u); } catch (e) { console.error(e); } });
+  async function withProfile(user, { background = true } = {}) {
     if (!user) return null;
-    const { data } = await sb.from('profiles').select('role').eq('id', user.id).maybeSingle();
-    return { id: user.id, email: user.email, role: data?.role || 'user' };
+    let cached = null;
+    try { cached = localStorage.getItem(roleKey(user.id)); } catch { /* ignore */ }
+    const fresh = async () => {
+      const { data } = await sb.from('profiles').select('role').eq('id', user.id).maybeSingle();
+      const role = data?.role || 'user';
+      try { localStorage.setItem(roleKey(user.id), role); } catch { /* ignore */ }
+      return role;
+    };
+    if (cached && background) {
+      fresh().then((role) => { if (role !== cached) notify({ id: user.id, email: user.email, role }); }).catch(() => {});
+      return { id: user.id, email: user.email, role: cached };
+    }
+    let role = 'user';
+    try { role = await fresh(); } catch { role = cached || 'user'; }
+    return { id: user.id, email: user.email, role };
   }
   // The signed-in user's id from the locally cached session (no extra network round trip per tap).
   async function uid() {
@@ -28,16 +58,15 @@ export function createSupabaseBackend(url, key) {
   }
 
   // Supabase returns at most 1000 rows per request. A serious learner has more progress rows
-  // than that (Gemara alone is 2696 pages), so read in pages until everything is in.
+  // than that (Gemara alone is 2696 pages), so read in pages until a page comes back short.
   const PAGE = 1000;
   async function fetchAll(query) {
     const out = [];
     for (let from = 0; ; from += PAGE) {
-      const { data, error, count } = await query().range(from, from + PAGE - 1);
+      const { data, error } = await query().range(from, from + PAGE - 1);
       if (error) throw error;
       out.push(...(data || []));
-      const done = !data?.length || (count != null ? out.length >= count : data.length < PAGE);
-      if (done) return out;
+      if (!data || data.length < PAGE) return out;
     }
   }
 
@@ -88,6 +117,7 @@ export function createSupabaseBackend(url, key) {
         return withProfile(data?.session?.user);
       },
       onChange(cb) {
+        listeners.add(cb);
         const { data } = sb.auth.onAuthStateChange((event, session) => {
           // Email links land on #access_token=... which HashRouter would read as a page name.
           const h = window.location.hash;
@@ -97,7 +127,7 @@ export function createSupabaseBackend(url, key) {
           if (event === 'PASSWORD_RECOVERY') window.location.hash = '#/settings'; // the Settings screen has the new-password box
           withProfile(session?.user).then(cb);
         });
-        return () => data.subscription.unsubscribe();
+        return () => { listeners.delete(cb); data.subscription.unsubscribe(); };
       },
       async signInWithEmail(email) { check(await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo() } })); },
       async signInWithPassword(email, password) { check(await sb.auth.signInWithPassword({ email, password })); },
@@ -114,9 +144,9 @@ export function createSupabaseBackend(url, key) {
     },
     refs: {
       async load() {
-        const out = {};
-        for (const t of REF_TABLES) out[t] = check(await sb.from(t).select('*').order('sort_order'));
-        return out;
+        // all five lists at the same time instead of one after another
+        const results = await Promise.all(REF_TABLES.map((t) => sb.from(t).select('*').order('sort_order')));
+        return Object.fromEntries(REF_TABLES.map((t, i) => [t, check(results[i])]));
       },
       async save(table, row) { return check(await sb.from(table).upsert(row, { onConflict: 'key' }).select().single()); },
       async remove(table, key) { check(await sb.from(table).delete().eq('key', key)); },
@@ -124,13 +154,13 @@ export function createSupabaseBackend(url, key) {
       async seedDefaults() { return replaceAll(seed); },
     },
     progress: {
-      async load() { return fetchAll(() => sb.from('study_progress').select('book_key,parashah_key,item,completed_at', { count: 'exact' }).order('id')); },
+      async load() { return fetchAll(() => sb.from('study_progress').select('book_key,parashah_key,item,completed_at').order('completed_at').order('id')); },
       add(rows) { return runOrQueue({ type: 'progress.add', rows }); },
       removeOne(scope) { return runOrQueue({ type: 'progress.removeOne', scope }); },
       remove(scope) { return runOrQueue({ type: 'progress.remove', scope }); },
     },
     aliyahLog: {
-      async load() { return fetchAll(() => sb.from('aliyah_log').select('*', { count: 'exact' }).order('created_at').order('id')); },
+      async load() { return fetchAll(() => sb.from('aliyah_log').select('*').order('created_at').order('id')); },
       // Several entries per honor are allowed. With an id the entry is updated, without one a new entry is added.
       async save(row) {
         const payload = { book_key: row.book_key, parashah_key: row.parashah_key, aliyah_key: row.aliyah_key, date: row.date || null, synagogue: row.synagogue || '', notes: row.notes || '', combined: !!row.combined };
@@ -151,6 +181,7 @@ export function createSupabaseBackend(url, key) {
         check(await sb.from('sheet_links').upsert({ user_id, token }, { onConflict: 'user_id' }));
         return token;
       },
+      base: (token) => `${url.replace(/\/$/, '')}/functions/v1/sheet-export?token=${token}`,
       url: (token, type) => `${url.replace(/\/$/, '')}/functions/v1/sheet-export?token=${token}&type=${type}`,
     },
     pendingCount: () => readQueue().length,

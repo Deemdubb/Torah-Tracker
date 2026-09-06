@@ -127,6 +127,21 @@ The formulas call a small piece of server code that runs on Supabase for free. I
 3. Open the function's page → **Details / Settings** and turn **off** "Enforce JWT verification" (Google Sheets cannot send a login header; the secret link is the protection instead).
 4. Make sure `supabase/schema.sql` has been run; it creates the `sheet_links` table the function reads.
 
+**One paste instead of four (the template).** Make a Google Sheet once with five tabs and share it as a template. Users press one button in the app, get their own copy, paste their link into one cell, and all tabs fill themselves. Build it like this:
+
+1. New Google Sheet. Name the first tab `Setup`. In A1 write "Paste your link from the app here:" and leave B1 empty (color it yellow).
+2. Add tabs named `Study`, `Aliyos`, `By Parashah`, `Sefarim`. In cell A1 of each, paste the matching formula:
+
+```
+=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=study"))
+=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=aliyos"))
+=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=parashah"))
+=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=books"))
+```
+
+3. Share → "Anyone with the link" → Viewer. Copy the sheet's address.
+4. Put that address in `.env` as `VITE_SHEET_TEMPLATE_URL` (and as a GitHub repository secret with the same name), then republish. The app's Settings screen now shows "Open the sheet template", which opens Google's "Make a copy" page for the user.
+
 Tab three, "By parashah", is one row per parashah with the aliyos learned and the aliyos received, which is the "page per Torah portion" view. Tab four, "Sefarim summary", is one row per sefer with how much was learned and how many times in full.
 
 **3. Owner's power-user sync (optional).** `tools/google-sheets-sync.gs` is a Google Apps Script that copies everyone's data into one spreadsheet every hour using the Supabase service key. Setup steps are at the top of that file. Only for the owner.

@@ -1,6 +1,6 @@
 // Holds the Torah lists, the user's progress and aliyah log in memory,
 // and talks to the database. Screens only use this, never the db directly.
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { db } from '@/lib/db';
 import { useAuth } from './AuthContext';
 import { buildIndex, logMapFrom, logKey, progressMapFrom, siblingsOf } from '@/lib/model';
@@ -11,6 +11,15 @@ const isNetworkError = (e) => /fetch|network|offline|load failed/i.test(String(e
 const cacheKey = (user) => (user && db.mode === 'supabase' ? `tt.cache.${user.id}` : null);
 const readCache = (k) => { try { return k ? JSON.parse(localStorage.getItem(k) || 'null') : null; } catch { return null; } };
 const writeCache = (k, v) => { try { if (k) localStorage.setItem(k, JSON.stringify(v)); } catch { /* full or blocked: ignore */ } };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Phones drop requests when the app goes to the background or the signal dips: try a few times before giving up.
+async function withRetry(fn, tries = 3) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try { return await fn(); } catch (e) { last = e; if (!isNetworkError(e)) throw e; await sleep(700 * (i + 1)); }
+  }
+  throw last;
+}
 
 export function DataProvider({ children }) {
   const { user, isAdmin } = useAuth();
@@ -29,30 +38,36 @@ export function DataProvider({ children }) {
   const [pendingCount, setPendingCount] = useState(0);
   const [offline, setOffline] = useState(false);
 
-  const reload = useCallback(async () => {
-    setLoading(true); setError(null);
+  const loadedAt = useRef(0);
+  const inFlight = useRef(false);
+
+  // silent = refresh behind the scenes without a spinner (used when you come back to the app)
+  const reload = useCallback(async ({ silent = false } = {}) => {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    const key = cacheKey(user);
+    const cached = readCache(key);
+    // Open at once with the copy saved on this device; fresh data replaces it a moment later.
+    if (!silent && cached && loadedAt.current === 0) {
+      setRefs(cached.refs || EMPTY); setRows(cached.progress || []); setLogMap(logMapFrom(cached.log)); setLoading(false);
+    } else if (!silent) setLoading(true);
+    setError(null);
     try {
-      let r = await db.refs.load();
+      let r = await withRetry(() => db.refs.load());
       if ((!r.categories || r.categories.length === 0) && isAdmin) r = await db.refs.seedDefaults();
-      const [progress, log] = await Promise.all([db.progress.load(), db.aliyahLog.load()]);
+      const [progress, log] = await withRetry(() => Promise.all([db.progress.load(), db.aliyahLog.load()]));
       setRefs(r); setRows(progress || []); setLogMap(logMapFrom(log)); setOffline(false);
-      writeCache(cacheKey(user), { refs: r, progress: progress || [], log: log || [], at: Date.now() });
+      loadedAt.current = Date.now();
+      writeCache(key, { refs: r, progress: progress || [], log: log || [], at: Date.now() });
     } catch (e) {
       console.error(e);
-      const cached = isNetworkError(e) ? readCache(cacheKey(user)) : null;
-      if (cached) { setRefs(cached.refs || EMPTY); setRows(cached.progress || []); setLogMap(logMapFrom(cached.log)); setOffline(true); }
-      else setError(e);
-    } finally { setLoading(false); }
+      if (isNetworkError(e) && cached) { if (loadedAt.current === 0) { setRefs(cached.refs || EMPTY); setRows(cached.progress || []); setLogMap(logMapFrom(cached.log)); } setOffline(true); }
+      else if (!(silent && loadedAt.current)) setError(e);
+    } finally { setLoading(false); inFlight.current = false; }
   }, [isAdmin, setError, user]);
 
-  useEffect(() => { if (user) reload(); }, [user, reload]);
-  // keep the saved copy fresh so the app still opens with your data when there is no signal
-  useEffect(() => { if (user && !loading && !offline) writeCache(cacheKey(user), { refs, progress: rows, log: [...logMap.values()].flat(), at: Date.now() }); }, [user, loading, offline, refs, rows, logMap]);
-  useEffect(() => {
-    const back = () => { db.flush?.().catch(() => {}).then(() => { if (offline) reload(); }); };
-    window.addEventListener('online', back);
-    return () => window.removeEventListener('online', back);
-  }, [offline, reload]);
+  useEffect(() => { loadedAt.current = 0; if (user) reload(); }, [user, reload]);
+  // how many changes are still waiting to be sent (offline queue)
   useEffect(() => {
     const tick = () => setPendingCount(db.pendingCount());
     tick();
@@ -60,6 +75,16 @@ export function DataProvider({ children }) {
     db.flush?.().catch(() => {});
     return () => clearInterval(id);
   }, []);
+  // keep the saved copy fresh so the app still opens with your data when there is no signal
+  useEffect(() => { if (user && !loading && !offline && loadedAt.current) writeCache(cacheKey(user), { refs, progress: rows, log: [...logMap.values()].flat(), at: Date.now() }); }, [user, loading, offline, refs, rows, logMap]);
+  // back online, or back to the app after a while: send queued changes and refresh quietly
+  useEffect(() => {
+    const back = () => { db.flush?.().catch(() => {}).then(() => { if (offline || Date.now() - loadedAt.current > 60000) reload({ silent: true }); }); };
+    const onVisible = () => { if (document.visibilityState === 'visible') back(); };
+    window.addEventListener('online', back);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { window.removeEventListener('online', back); document.removeEventListener('visibilitychange', onVisible); };
+  }, [offline, reload]);
 
   const idx = useMemo(() => buildIndex(refs), [refs]);
 

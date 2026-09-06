@@ -1,6 +1,6 @@
 // Settings card: a secret link that a Google Sheet can pull the user's data through (cloud mode only).
 import { useEffect, useState } from 'react';
-import { Link2, RefreshCw, Copy, Check, Table } from 'lucide-react';
+import { Link2, RefreshCw, Copy, Check, Table, ExternalLink, ChevronDown } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/db';
@@ -8,6 +8,9 @@ import { Banner, Button, Card } from './ui';
 import { useConfirm } from './ConfirmDialog';
 
 const newToken = () => Array.from(crypto.getRandomValues(new Uint8Array(24))).map((b) => b.toString(16).padStart(2, '0')).join('');
+// A ready-made Google Sheet that people copy; they paste their one link into it and every tab fills itself.
+const TEMPLATE_URL = (import.meta.env.VITE_SHEET_TEMPLATE_URL || '').trim();
+const templateCopyUrl = () => TEMPLATE_URL.replace(/\/(edit|copy|view)?.*$/, '') + '/copy';
 
 function FormulaRow({ label, formula }) {
   const { t } = useLang();
@@ -36,6 +39,7 @@ export default function SheetLinkCard() {
   const [token, setToken] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [showFormulas, setShowFormulas] = useState(!TEMPLATE_URL);
 
   useEffect(() => {
     if (isLocalMode || !db.sheetLink) return;
@@ -63,13 +67,26 @@ export default function SheetLinkCard() {
             <Button onClick={make} disabled={busy}><Link2 className="w-4 h-4" />{t('sheetCreate')}</Button>
           ) : (
             <>
-              <p className="text-sm">{t('sheetHow')}</p>
-              <div className="space-y-3">
-                <FormulaRow label={t('sheetTabStudy')} formula={formula('study')} />
-                <FormulaRow label={t('sheetTabAliyos')} formula={formula('aliyos')} />
-                <FormulaRow label={t('sheetTabParashah')} formula={formula('parashah')} />
-                <FormulaRow label={t('sheetTabBooks')} formula={formula('books')} />
-              </div>
+              <FormulaRow label={t('sheetYourLink')} formula={db.sheetLink.base(token)} />
+              {TEMPLATE_URL ? (
+                <>
+                  <a href={templateCopyUrl()} target="_blank" rel="noreferrer" className="tap inline-flex items-center justify-center gap-2 h-11 px-4 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 w-full"><ExternalLink className="w-4 h-4" />{t('sheetTemplateBtn')}</a>
+                  <p className="text-sm text-muted-foreground">{t('sheetTemplateHow')}</p>
+                </>
+              ) : (
+                <p className="text-sm">{t('sheetHow')}</p>
+              )}
+              {TEMPLATE_URL && (
+                <button type="button" className="tap text-sm text-primary flex items-center gap-1" onClick={() => setShowFormulas((v) => !v)}><ChevronDown className={`w-4 h-4 transition ${showFormulas ? 'rotate-180' : ''}`} />{t('sheetManual')}</button>
+              )}
+              {showFormulas && (
+                <div className="space-y-3">
+                  <FormulaRow label={t('sheetTabStudy')} formula={formula('study')} />
+                  <FormulaRow label={t('sheetTabAliyos')} formula={formula('aliyos')} />
+                  <FormulaRow label={t('sheetTabParashah')} formula={formula('parashah')} />
+                  <FormulaRow label={t('sheetTabBooks')} formula={formula('books')} />
+                </div>
+              )}
               <p className="text-xs text-muted-foreground">{t('sheetWarning')}</p>
               <Button variant="outline" size="sm" onClick={make} disabled={busy}><RefreshCw className="w-4 h-4" />{t('sheetRegenerate')}</Button>
             </>
