@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 22% 9%;
+    --foreground: 210 25% 96%;
+    --card: 222 20% 12%;
+    --card-foreground: 210 25% 96%;
+    --popover: 222 20% 12%;
+    --popover-foreground: 210 25% 96%;
+    --primary: 152 56% 48%;
+    --primary-foreground: 222 22% 9%;
+    --secondary: 222 18% 18%;
+    --secondary-foreground: 210 25% 96%;
+    --muted: 222 18% 16%;
+    --muted-foreground: 220 14% 62%;
+    --accent: 152 40% 20%;
+    --accent-foreground: 210 25% 96%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 210 25% 96%;
+    --border: 222 16% 20%;
+    --input: 222 16% 22%;
+    --ring: 152 56% 48%;
+    --radius: 1.1rem;
+    --font-heading: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Frank Ruhl Libre', 'Heebo', serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --sidebar-background: 222 20% 12%;
+    --sidebar-foreground: 210 25% 96%;
+    --sidebar-primary: 152 56% 48%;
+    --sidebar-primary-foreground: 222 22% 9%;
+    --sidebar-accent: 222 18% 18%;
+    --sidebar-accent-foreground: 210 25% 96%;
+    --sidebar-border: 222 16% 20%;
+    --sidebar-ring: 152 56% 48%;
+    --chart-1: 152 56% 48%;
+    --chart-2: 197 37% 50%;
+    --chart-3: 43 74% 66%;
+    --chart-4: 27 87% 67%;
+    --chart-5: 12 76% 61%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

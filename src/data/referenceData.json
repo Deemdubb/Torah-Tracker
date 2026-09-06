@@ -1,0 +1,3707 @@
+{
+  "generated_from": "base44-export (2026-09-05)",
+  "categories": [
+    {
+      "key": "tanach",
+      "name_he": "תנ״ך",
+      "name_en": "Tanach",
+      "leaf_type": "perek",
+      "has_sections": true,
+      "sort_order": 1
+    },
+    {
+      "key": "mishnah",
+      "name_he": "משנה",
+      "name_en": "Mishnah",
+      "leaf_type": "perek",
+      "has_sections": true,
+      "sort_order": 2
+    },
+    {
+      "key": "gemara",
+      "name_he": "גמרא",
+      "name_en": "Gemara",
+      "leaf_type": "daf",
+      "has_sections": false,
+      "sort_order": 3
+    },
+    {
+      "key": "rambam",
+      "name_he": "רמב״ם",
+      "name_en": "Rambam",
+      "leaf_type": "perek",
+      "has_sections": false,
+      "sort_order": 4
+    },
+    {
+      "key": "shulchan-aruch",
+      "name_he": "שולחן ערוך",
+      "name_en": "Shulchan Aruch",
+      "leaf_type": "perek",
+      "has_sections": false,
+      "sort_order": 5
+    },
+    {
+      "key": "yerushalmi",
+      "name_he": "ירושלמי",
+      "name_en": "Yerushalmi",
+      "leaf_type": "perek",
+      "has_sections": false,
+      "sort_order": 6
+    }
+  ],
+  "sections": [
+    {
+      "key": "torah",
+      "category_key": "tanach",
+      "name_he": "תורה",
+      "name_en": "Torah",
+      "sort_order": 1
+    },
+    {
+      "key": "neviim",
+      "category_key": "tanach",
+      "name_he": "נביאים",
+      "name_en": "Nevi'im",
+      "sort_order": 2
+    },
+    {
+      "key": "ketuvim",
+      "category_key": "tanach",
+      "name_he": "כתובים",
+      "name_en": "Ketuvim",
+      "sort_order": 3
+    },
+    {
+      "key": "zeraim",
+      "category_key": "mishnah",
+      "name_he": "זרעים",
+      "name_en": "Zeraim",
+      "sort_order": 1
+    },
+    {
+      "key": "moed",
+      "category_key": "mishnah",
+      "name_he": "מועד",
+      "name_en": "Moed",
+      "sort_order": 2
+    },
+    {
+      "key": "nashim",
+      "category_key": "mishnah",
+      "name_he": "נשים",
+      "name_en": "Nashim",
+      "sort_order": 3
+    },
+    {
+      "key": "nezikin",
+      "category_key": "mishnah",
+      "name_he": "נזיקין",
+      "name_en": "Nezikin",
+      "sort_order": 4
+    },
+    {
+      "key": "kodashim",
+      "category_key": "mishnah",
+      "name_he": "קדשים",
+      "name_en": "Kodashim",
+      "sort_order": 5
+    },
+    {
+      "key": "teharos",
+      "category_key": "mishnah",
+      "name_he": "טהרות",
+      "name_en": "Teharos",
+      "sort_order": 6
+    }
+  ],
+  "books": [
+    {
+      "key": "tanach-bereishis",
+      "category_key": "tanach",
+      "section_key": "torah",
+      "name_he": "בראשית",
+      "name_en": "Bereishis",
+      "item_count": 50,
+      "first_item": 1,
+      "track_mode": "parshiyot",
+      "sort_order": 1
+    },
+    {
+      "key": "tanach-shemos",
+      "category_key": "tanach",
+      "section_key": "torah",
+      "name_he": "שמות",
+      "name_en": "Shemos",
+      "item_count": 40,
+      "first_item": 1,
+      "track_mode": "parshiyot",
+      "sort_order": 2
+    },
+    {
+      "key": "tanach-vayikra",
+      "category_key": "tanach",
+      "section_key": "torah",
+      "name_he": "ויקרא",
+      "name_en": "Vayikra",
+      "item_count": 27,
+      "first_item": 1,
+      "track_mode": "parshiyot",
+      "sort_order": 3
+    },
+    {
+      "key": "tanach-bamidbar",
+      "category_key": "tanach",
+      "section_key": "torah",
+      "name_he": "במדבר",
+      "name_en": "Bamidbar",
+      "item_count": 36,
+      "first_item": 1,
+      "track_mode": "parshiyot",
+      "sort_order": 4
+    },
+    {
+      "key": "tanach-devarim",
+      "category_key": "tanach",
+      "section_key": "torah",
+      "name_he": "דברים",
+      "name_en": "Devarim",
+      "item_count": 34,
+      "first_item": 1,
+      "track_mode": "parshiyot",
+      "sort_order": 5
+    },
+    {
+      "key": "tanach-yehoshua",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "יהושע",
+      "name_en": "Yehoshua",
+      "item_count": 24,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "tanach-shoftim",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "שופטים",
+      "name_en": "Shoftim",
+      "item_count": 21,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "tanach-shmuel-alef",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "שמואל א",
+      "name_en": "Shmuel Alef",
+      "item_count": 31,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "tanach-shmuel-beis",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "שמואל ב",
+      "name_en": "Shmuel Beis",
+      "item_count": 24,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "tanach-melachim-alef",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "מלכים א",
+      "name_en": "Melachim Alef",
+      "item_count": 22,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "tanach-melachim-beis",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "מלכים ב",
+      "name_en": "Melachim Beis",
+      "item_count": 25,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "tanach-yeshayahu",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "ישעיהו",
+      "name_en": "Yeshayahu",
+      "item_count": 66,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "tanach-yirmiyahu",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "ירמיהו",
+      "name_en": "Yirmiyahu",
+      "item_count": 52,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 8
+    },
+    {
+      "key": "tanach-yechezkel",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "יחזקאל",
+      "name_en": "Yechezkel",
+      "item_count": 48,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 9
+    },
+    {
+      "key": "tanach-hoshea",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "הושע",
+      "name_en": "Hoshea",
+      "item_count": 14,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 10
+    },
+    {
+      "key": "tanach-yoel",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "יואל",
+      "name_en": "Yoel",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 11
+    },
+    {
+      "key": "tanach-amos",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "עמוס",
+      "name_en": "Amos",
+      "item_count": 9,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 12
+    },
+    {
+      "key": "tanach-ovadiah",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "עובדיה",
+      "name_en": "Ovadiah",
+      "item_count": 1,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 13
+    },
+    {
+      "key": "tanach-yonah",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "יונה",
+      "name_en": "Yonah",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 14
+    },
+    {
+      "key": "tanach-michah",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "מיכה",
+      "name_en": "Michah",
+      "item_count": 7,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 15
+    },
+    {
+      "key": "tanach-nachum",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "נחום",
+      "name_en": "Nachum",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 16
+    },
+    {
+      "key": "tanach-chabakuk",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "חבקוק",
+      "name_en": "Chabakuk",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 17
+    },
+    {
+      "key": "tanach-tzefaniah",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "צפניה",
+      "name_en": "Tzefaniah",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 18
+    },
+    {
+      "key": "tanach-chagai",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "חגי",
+      "name_en": "Chagai",
+      "item_count": 2,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 19
+    },
+    {
+      "key": "tanach-zecharya",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "זכריה",
+      "name_en": "Zecharya",
+      "item_count": 14,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 20
+    },
+    {
+      "key": "tanach-malachi",
+      "category_key": "tanach",
+      "section_key": "neviim",
+      "name_he": "מלאכי",
+      "name_en": "Malachi",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 21
+    },
+    {
+      "key": "tanach-tehillim",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "תהילים",
+      "name_en": "Tehillim",
+      "item_count": 150,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "tanach-mishlei",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "משלי",
+      "name_en": "Mishlei",
+      "item_count": 31,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "tanach-iyov",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "איוב",
+      "name_en": "Iyov",
+      "item_count": 42,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "tanach-shir-hashirim",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "שיר השירים",
+      "name_en": "Shir Hashirim",
+      "item_count": 8,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "tanach-rus",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "רות",
+      "name_en": "Rus",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "tanach-eicha",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "איכה",
+      "name_en": "Eicha",
+      "item_count": 5,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "tanach-koheles",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "קהלת",
+      "name_en": "Koheles",
+      "item_count": 12,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "tanach-esther",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "אסתר",
+      "name_en": "Esther",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 8
+    },
+    {
+      "key": "tanach-daniel",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "דניאל",
+      "name_en": "Daniel",
+      "item_count": 12,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 9
+    },
+    {
+      "key": "tanach-ezra",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "עזרא",
+      "name_en": "Ezra",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 10
+    },
+    {
+      "key": "tanach-nechemia",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "נחמיה",
+      "name_en": "Nechemia",
+      "item_count": 13,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 11
+    },
+    {
+      "key": "tanach-divrei-hayamim-alef",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "דברי הימים א",
+      "name_en": "Divrei Hayamim Alef",
+      "item_count": 29,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 12
+    },
+    {
+      "key": "tanach-divrei-hayamim-beis",
+      "category_key": "tanach",
+      "section_key": "ketuvim",
+      "name_he": "דברי הימים ב",
+      "name_en": "Divrei Hayamim Beis",
+      "item_count": 36,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 13
+    },
+    {
+      "key": "mishnah-brachos",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "ברכות",
+      "name_en": "Brachos",
+      "item_count": 9,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "mishnah-peah",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "פאה",
+      "name_en": "Peah",
+      "item_count": 8,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "mishnah-demai",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "דמאי",
+      "name_en": "Demai",
+      "item_count": 7,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "mishnah-kilayim",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "כלאים",
+      "name_en": "Kilayim",
+      "item_count": 9,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "mishnah-sheviis",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "שביעית",
+      "name_en": "Sheviis",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "mishnah-terumos",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "תרומות",
+      "name_en": "Terumos",
+      "item_count": 11,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "mishnah-maasros",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "מעשרות",
+      "name_en": "Maasros",
+      "item_count": 5,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "mishnah-maaser-sheni",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "מעשר שני",
+      "name_en": "Maaser Sheni",
+      "item_count": 5,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 8
+    },
+    {
+      "key": "mishnah-challah",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "חלה",
+      "name_en": "Challah",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 9
+    },
+    {
+      "key": "mishnah-orlah",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "ערלה",
+      "name_en": "Orlah",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 10
+    },
+    {
+      "key": "mishnah-bikurim",
+      "category_key": "mishnah",
+      "section_key": "zeraim",
+      "name_he": "ביכורים",
+      "name_en": "Bikurim",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 11
+    },
+    {
+      "key": "mishnah-shabbos",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "שבת",
+      "name_en": "Shabbos",
+      "item_count": 24,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "mishnah-eiruvin",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "עירובין",
+      "name_en": "Eiruvin",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "mishnah-pesachim",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "פסחים",
+      "name_en": "Pesachim",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "mishnah-shekalim",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "שקלים",
+      "name_en": "Shekalim",
+      "item_count": 8,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "mishnah-yoma",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "יומא",
+      "name_en": "Yoma",
+      "item_count": 8,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "mishnah-sukkah",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "סוכה",
+      "name_en": "Sukkah",
+      "item_count": 5,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "mishnah-beitzah",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "ביצה",
+      "name_en": "Beitzah",
+      "item_count": 5,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "mishnah-rosh-hashanah",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "ראש השנה",
+      "name_en": "Rosh Hashanah",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 8
+    },
+    {
+      "key": "mishnah-taanis",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "תענית",
+      "name_en": "Taanis",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 9
+    },
+    {
+      "key": "mishnah-megillah",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "מגילה",
+      "name_en": "Megillah",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 10
+    },
+    {
+      "key": "mishnah-moed-katan",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "מועד קטן",
+      "name_en": "Moed Katan",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 11
+    },
+    {
+      "key": "mishnah-chagigah",
+      "category_key": "mishnah",
+      "section_key": "moed",
+      "name_he": "חגיגה",
+      "name_en": "Chagigah",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 12
+    },
+    {
+      "key": "mishnah-yevamos",
+      "category_key": "mishnah",
+      "section_key": "nashim",
+      "name_he": "יבמות",
+      "name_en": "Yevamos",
+      "item_count": 16,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "mishnah-kesubos",
+      "category_key": "mishnah",
+      "section_key": "nashim",
+      "name_he": "כתובות",
+      "name_en": "Kesubos",
+      "item_count": 13,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "mishnah-nedarim",
+      "category_key": "mishnah",
+      "section_key": "nashim",
+      "name_he": "נדרים",
+      "name_en": "Nedarim",
+      "item_count": 11,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "mishnah-nazir",
+      "category_key": "mishnah",
+      "section_key": "nashim",
+      "name_he": "נזיר",
+      "name_en": "Nazir",
+      "item_count": 9,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "mishnah-sotah",
+      "category_key": "mishnah",
+      "section_key": "nashim",
+      "name_he": "סוטה",
+      "name_en": "Sotah",
+      "item_count": 9,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "mishnah-gittin",
+      "category_key": "mishnah",
+      "section_key": "nashim",
+      "name_he": "גיטין",
+      "name_en": "Gittin",
+      "item_count": 9,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "mishnah-kiddushin",
+      "category_key": "mishnah",
+      "section_key": "nashim",
+      "name_he": "קידושין",
+      "name_en": "Kiddushin",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "mishnah-bava-kamma",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "בבא קמא",
+      "name_en": "Bava Kamma",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "mishnah-bava-metzia",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "בבא מציעא",
+      "name_en": "Bava Metzia",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "mishnah-bava-basra",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "בבא בתרא",
+      "name_en": "Bava Basra",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "mishnah-sanhedrin",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "סנהדרין",
+      "name_en": "Sanhedrin",
+      "item_count": 11,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "mishnah-makkos",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "מכות",
+      "name_en": "Makkos",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "mishnah-shevuos",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "שבועות",
+      "name_en": "Shevuos",
+      "item_count": 8,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "mishnah-eduyos",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "עדויות",
+      "name_en": "Eduyos",
+      "item_count": 8,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "mishnah-avodah-zarah",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "עבודה זרה",
+      "name_en": "Avodah Zarah",
+      "item_count": 5,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 8
+    },
+    {
+      "key": "mishnah-avos",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "אבות",
+      "name_en": "Avos",
+      "item_count": 6,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 9
+    },
+    {
+      "key": "mishnah-horayos",
+      "category_key": "mishnah",
+      "section_key": "nezikin",
+      "name_he": "הוריות",
+      "name_en": "Horayos",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 10
+    },
+    {
+      "key": "mishnah-zevachim",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "זבחים",
+      "name_en": "Zevachim",
+      "item_count": 14,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "mishnah-menachos",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "מנחות",
+      "name_en": "Menachos",
+      "item_count": 13,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "mishnah-chullin",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "חולין",
+      "name_en": "Chullin",
+      "item_count": 12,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "mishnah-bechoros",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "בכורות",
+      "name_en": "Bechoros",
+      "item_count": 9,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "mishnah-arachin",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "ערכין",
+      "name_en": "Arachin",
+      "item_count": 9,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "mishnah-temurah",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "תמורה",
+      "name_en": "Temurah",
+      "item_count": 7,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "mishnah-krisos",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "כריתות",
+      "name_en": "Krisos",
+      "item_count": 6,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "mishnah-meilah",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "מעילה",
+      "name_en": "Meilah",
+      "item_count": 6,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 8
+    },
+    {
+      "key": "mishnah-tamid",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "תמיד",
+      "name_en": "Tamid",
+      "item_count": 7,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 9
+    },
+    {
+      "key": "mishnah-midos",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "מדות",
+      "name_en": "Midos",
+      "item_count": 5,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 10
+    },
+    {
+      "key": "mishnah-kinim",
+      "category_key": "mishnah",
+      "section_key": "kodashim",
+      "name_he": "קינים",
+      "name_en": "Kinim",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 11
+    },
+    {
+      "key": "mishnah-keilim",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "כלים",
+      "name_en": "Keilim",
+      "item_count": 30,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "mishnah-ohalos",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "אהלות",
+      "name_en": "Ohalos",
+      "item_count": 18,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "mishnah-negaim",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "נגעים",
+      "name_en": "Negaim",
+      "item_count": 14,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "mishnah-parah",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "פרה",
+      "name_en": "Parah",
+      "item_count": 12,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "mishnah-teharos",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "טהרות",
+      "name_en": "Teharos",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "mishnah-mikvaos",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "מקוואות",
+      "name_en": "Mikvaos",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "mishnah-niddah",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "נידה",
+      "name_en": "Niddah",
+      "item_count": 10,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "mishnah-machshirin",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "מכשירין",
+      "name_en": "Machshirin",
+      "item_count": 6,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 8
+    },
+    {
+      "key": "mishnah-zavim",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "זבים",
+      "name_en": "Zavim",
+      "item_count": 5,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 9
+    },
+    {
+      "key": "mishnah-tevul-yom",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "טבול יום",
+      "name_en": "Tevul Yom",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 10
+    },
+    {
+      "key": "mishnah-yadayim",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "ידים",
+      "name_en": "Yadayim",
+      "item_count": 4,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 11
+    },
+    {
+      "key": "mishnah-uktzin",
+      "category_key": "mishnah",
+      "section_key": "teharos",
+      "name_he": "עוקצים",
+      "name_en": "Uktzin",
+      "item_count": 3,
+      "first_item": 1,
+      "track_mode": "items",
+      "sort_order": 12
+    },
+    {
+      "key": "gemara-brachos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "ברכות",
+      "name_en": "Brachos",
+      "item_count": 64,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 1
+    },
+    {
+      "key": "gemara-shabbos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "שבת",
+      "name_en": "Shabbos",
+      "item_count": 157,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 2
+    },
+    {
+      "key": "gemara-eiruvin",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "עירובין",
+      "name_en": "Eiruvin",
+      "item_count": 105,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 3
+    },
+    {
+      "key": "gemara-pesachim",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "פסחים",
+      "name_en": "Pesachim",
+      "item_count": 121,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 4
+    },
+    {
+      "key": "gemara-shekalim",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "שקלים",
+      "name_en": "Shekalim",
+      "item_count": 22,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 5
+    },
+    {
+      "key": "gemara-yoma",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "יומא",
+      "name_en": "Yoma",
+      "item_count": 88,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 6
+    },
+    {
+      "key": "gemara-sukkah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "סוכה",
+      "name_en": "Sukkah",
+      "item_count": 56,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 7
+    },
+    {
+      "key": "gemara-beitzah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "ביצה",
+      "name_en": "Beitzah",
+      "item_count": 40,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 8
+    },
+    {
+      "key": "gemara-rosh-hashanah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "ראש השנה",
+      "name_en": "Rosh Hashanah",
+      "item_count": 35,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 9
+    },
+    {
+      "key": "gemara-taanis",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "תענית",
+      "name_en": "Taanis",
+      "item_count": 31,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 10
+    },
+    {
+      "key": "gemara-megillah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "מגילה",
+      "name_en": "Megillah",
+      "item_count": 32,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 11
+    },
+    {
+      "key": "gemara-moed-katan",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "מועד קטן",
+      "name_en": "Moed Katan",
+      "item_count": 29,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 12
+    },
+    {
+      "key": "gemara-chagigah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "חגיגה",
+      "name_en": "Chagigah",
+      "item_count": 27,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 13
+    },
+    {
+      "key": "gemara-yevamos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "יבמות",
+      "name_en": "Yevamos",
+      "item_count": 122,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 14
+    },
+    {
+      "key": "gemara-kesubos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "כתובות",
+      "name_en": "Kesubos",
+      "item_count": 112,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 15
+    },
+    {
+      "key": "gemara-nedarim",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "נדרים",
+      "name_en": "Nedarim",
+      "item_count": 91,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 16
+    },
+    {
+      "key": "gemara-nazir",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "נזיר",
+      "name_en": "Nazir",
+      "item_count": 66,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 17
+    },
+    {
+      "key": "gemara-sotah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "סוטה",
+      "name_en": "Sotah",
+      "item_count": 49,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 18
+    },
+    {
+      "key": "gemara-gittin",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "גיטין",
+      "name_en": "Gittin",
+      "item_count": 90,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 19
+    },
+    {
+      "key": "gemara-kiddushin",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "קידושין",
+      "name_en": "Kiddushin",
+      "item_count": 82,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 20
+    },
+    {
+      "key": "gemara-bava-kamma",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "בבא קמא",
+      "name_en": "Bava Kamma",
+      "item_count": 119,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 21
+    },
+    {
+      "key": "gemara-bava-metzia",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "בבא מציעא",
+      "name_en": "Bava Metzia",
+      "item_count": 119,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 22
+    },
+    {
+      "key": "gemara-bava-basra",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "בבא בתרא",
+      "name_en": "Bava Basra",
+      "item_count": 176,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 23
+    },
+    {
+      "key": "gemara-sanhedrin",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "סנהדרין",
+      "name_en": "Sanhedrin",
+      "item_count": 113,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 24
+    },
+    {
+      "key": "gemara-makkos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "מכות",
+      "name_en": "Makkos",
+      "item_count": 24,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 25
+    },
+    {
+      "key": "gemara-shevuos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "שבועות",
+      "name_en": "Shevuos",
+      "item_count": 49,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 26
+    },
+    {
+      "key": "gemara-avodah-zarah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "עבודה זרה",
+      "name_en": "Avodah Zarah",
+      "item_count": 76,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 27
+    },
+    {
+      "key": "gemara-horayos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "הוריות",
+      "name_en": "Horayos",
+      "item_count": 14,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 28
+    },
+    {
+      "key": "gemara-zevachim",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "זבחים",
+      "name_en": "Zevachim",
+      "item_count": 120,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 29
+    },
+    {
+      "key": "gemara-menachos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "מנחות",
+      "name_en": "Menachos",
+      "item_count": 110,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 30
+    },
+    {
+      "key": "gemara-chullin",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "חולין",
+      "name_en": "Chullin",
+      "item_count": 142,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 31
+    },
+    {
+      "key": "gemara-bechoros",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "בכורות",
+      "name_en": "Bechoros",
+      "item_count": 61,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 32
+    },
+    {
+      "key": "gemara-arachin",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "ערכין",
+      "name_en": "Arachin",
+      "item_count": 34,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 33
+    },
+    {
+      "key": "gemara-temurah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "תמורה",
+      "name_en": "Temurah",
+      "item_count": 34,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 34
+    },
+    {
+      "key": "gemara-krisos",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "כריתות",
+      "name_en": "Krisos",
+      "item_count": 28,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 35
+    },
+    {
+      "key": "gemara-meilah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "מעילה",
+      "name_en": "Meilah",
+      "item_count": 22,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 36
+    },
+    {
+      "key": "gemara-niddah",
+      "category_key": "gemara",
+      "section_key": "",
+      "name_he": "נידה",
+      "name_en": "Niddah",
+      "item_count": 73,
+      "first_item": 2,
+      "track_mode": "items",
+      "sort_order": 37
+    }
+  ],
+  "parshiyot": [
+    {
+      "key": "bereishis",
+      "book_key": "tanach-bereishis",
+      "name_he": "בראשית",
+      "name_en": "Bereishis",
+      "sort_order": 1,
+      "aliyah_ranges": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ]
+    },
+    {
+      "key": "noach",
+      "book_key": "tanach-bereishis",
+      "name_he": "נח",
+      "name_en": "Noach",
+      "sort_order": 2,
+      "aliyah_ranges": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          11,
+          11
+        ]
+      ]
+    },
+    {
+      "key": "lech-lecha",
+      "book_key": "tanach-bereishis",
+      "name_he": "לך לך",
+      "name_en": "Lech Lecha",
+      "sort_order": 3,
+      "aliyah_ranges": [
+        [
+          12,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          15,
+          17
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          17,
+          17
+        ]
+      ]
+    },
+    {
+      "key": "vayeira",
+      "book_key": "tanach-bereishis",
+      "name_he": "וירא",
+      "name_en": "Vayeira",
+      "sort_order": 4,
+      "aliyah_ranges": [
+        [
+          18,
+          18
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          19,
+          21
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          22,
+          22
+        ]
+      ]
+    },
+    {
+      "key": "chayei-sarah",
+      "book_key": "tanach-bereishis",
+      "name_he": "חיי שרה",
+      "name_en": "Chayei Sarah",
+      "sort_order": 5,
+      "aliyah_ranges": [
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          25,
+          25
+        ]
+      ]
+    },
+    {
+      "key": "toldos",
+      "book_key": "tanach-bereishis",
+      "name_he": "תולדות",
+      "name_en": "Toldos",
+      "sort_order": 6,
+      "aliyah_ranges": [
+        [
+          25,
+          26
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          27
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          28,
+          28
+        ]
+      ]
+    },
+    {
+      "key": "vayetzei",
+      "book_key": "tanach-bereishis",
+      "name_he": "ויצא",
+      "name_en": "Vayetzei",
+      "sort_order": 7,
+      "aliyah_ranges": [
+        [
+          28,
+          29
+        ],
+        [
+          29,
+          29
+        ],
+        [
+          29,
+          30
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          30,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          32,
+          32
+        ]
+      ]
+    },
+    {
+      "key": "vayishlach",
+      "book_key": "tanach-bereishis",
+      "name_he": "וישלח",
+      "name_en": "Vayishlach",
+      "sort_order": 8,
+      "aliyah_ranges": [
+        [
+          32,
+          32
+        ],
+        [
+          33,
+          33
+        ],
+        [
+          33,
+          35
+        ],
+        [
+          35,
+          35
+        ],
+        [
+          36,
+          36
+        ],
+        [
+          36,
+          36
+        ],
+        [
+          36,
+          36
+        ]
+      ]
+    },
+    {
+      "key": "vayeshev",
+      "book_key": "tanach-bereishis",
+      "name_he": "וישב",
+      "name_en": "Vayeshev",
+      "sort_order": 9,
+      "aliyah_ranges": [
+        [
+          37,
+          37
+        ],
+        [
+          37,
+          38
+        ],
+        [
+          39,
+          39
+        ],
+        [
+          39,
+          40
+        ],
+        [
+          40,
+          40
+        ],
+        [
+          40,
+          40
+        ],
+        [
+          40,
+          40
+        ]
+      ]
+    },
+    {
+      "key": "mikeitz",
+      "book_key": "tanach-bereishis",
+      "name_he": "מקץ",
+      "name_en": "Mikeitz",
+      "sort_order": 10,
+      "aliyah_ranges": [
+        [
+          41,
+          41
+        ],
+        [
+          41,
+          41
+        ],
+        [
+          41,
+          42
+        ],
+        [
+          42,
+          42
+        ],
+        [
+          43,
+          43
+        ],
+        [
+          43,
+          44
+        ],
+        [
+          44,
+          44
+        ]
+      ]
+    },
+    {
+      "key": "vayigash",
+      "book_key": "tanach-bereishis",
+      "name_he": "ויגש",
+      "name_en": "Vayigash",
+      "sort_order": 11,
+      "aliyah_ranges": [
+        [
+          44,
+          46
+        ],
+        [
+          46,
+          46
+        ],
+        [
+          46,
+          47
+        ],
+        [
+          47,
+          47
+        ],
+        [
+          47,
+          47
+        ],
+        [
+          47,
+          47
+        ],
+        [
+          47,
+          47
+        ]
+      ]
+    },
+    {
+      "key": "vayechi",
+      "book_key": "tanach-bereishis",
+      "name_he": "ויחי",
+      "name_en": "Vayechi",
+      "sort_order": 12,
+      "aliyah_ranges": [
+        [
+          47,
+          48
+        ],
+        [
+          48,
+          48
+        ],
+        [
+          48,
+          49
+        ],
+        [
+          49,
+          49
+        ],
+        [
+          49,
+          49
+        ],
+        [
+          50,
+          50
+        ],
+        [
+          50,
+          50
+        ]
+      ]
+    },
+    {
+      "key": "shemos",
+      "book_key": "tanach-shemos",
+      "name_he": "שמות",
+      "name_en": "Shemos",
+      "sort_order": 1,
+      "aliyah_ranges": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          6
+        ]
+      ]
+    },
+    {
+      "key": "vaera",
+      "book_key": "tanach-shemos",
+      "name_he": "וארא",
+      "name_en": "Vaera",
+      "sort_order": 2,
+      "aliyah_ranges": [
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ]
+    },
+    {
+      "key": "bo",
+      "book_key": "tanach-shemos",
+      "name_he": "בא",
+      "name_en": "Bo",
+      "sort_order": 3,
+      "aliyah_ranges": [
+        [
+          10,
+          10
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ]
+      ]
+    },
+    {
+      "key": "beshalach",
+      "book_key": "tanach-shemos",
+      "name_he": "בשלח",
+      "name_en": "Beshalach",
+      "sort_order": 4,
+      "aliyah_ranges": [
+        [
+          13,
+          14
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          15,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          17,
+          17
+        ]
+      ]
+    },
+    {
+      "key": "yisro",
+      "book_key": "tanach-shemos",
+      "name_he": "יתרו",
+      "name_en": "Yisro",
+      "sort_order": 5,
+      "aliyah_ranges": [
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          20
+        ]
+      ]
+    },
+    {
+      "key": "mishpatim",
+      "book_key": "tanach-shemos",
+      "name_he": "משפטים",
+      "name_en": "Mishpatim",
+      "sort_order": 6,
+      "aliyah_ranges": [
+        [
+          21,
+          21
+        ],
+        [
+          21,
+          22
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          24,
+          24
+        ]
+      ]
+    },
+    {
+      "key": "terumah",
+      "book_key": "tanach-shemos",
+      "name_he": "תרומה",
+      "name_en": "Terumah",
+      "sort_order": 7,
+      "aliyah_ranges": [
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          26
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          27,
+          27
+        ]
+      ]
+    },
+    {
+      "key": "tetzaveh",
+      "book_key": "tanach-shemos",
+      "name_he": "תצוה",
+      "name_en": "Tetzaveh",
+      "sort_order": 8,
+      "aliyah_ranges": [
+        [
+          27,
+          28
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          28,
+          29
+        ],
+        [
+          29,
+          29
+        ],
+        [
+          29,
+          30
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          30,
+          30
+        ]
+      ]
+    },
+    {
+      "key": "ki-sisa",
+      "book_key": "tanach-shemos",
+      "name_he": "כי תשא",
+      "name_en": "Ki Sisa",
+      "sort_order": 9,
+      "aliyah_ranges": [
+        [
+          30,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          32
+        ],
+        [
+          32,
+          33
+        ],
+        [
+          33,
+          34
+        ],
+        [
+          34,
+          34
+        ],
+        [
+          34,
+          34
+        ]
+      ]
+    },
+    {
+      "key": "vayakhel",
+      "book_key": "tanach-shemos",
+      "name_he": "ויקהל",
+      "name_en": "Vayakhel",
+      "sort_order": 10,
+      "aliyah_ranges": [
+        [
+          35,
+          35
+        ],
+        [
+          35,
+          36
+        ],
+        [
+          36,
+          36
+        ],
+        [
+          36,
+          37
+        ],
+        [
+          37,
+          37
+        ],
+        [
+          38,
+          38
+        ],
+        [
+          38,
+          38
+        ]
+      ]
+    },
+    {
+      "key": "pekudei",
+      "book_key": "tanach-shemos",
+      "name_he": "פקודי",
+      "name_en": "Pekudei",
+      "sort_order": 11,
+      "aliyah_ranges": [
+        [
+          38,
+          38
+        ],
+        [
+          39,
+          39
+        ],
+        [
+          39,
+          39
+        ],
+        [
+          39,
+          40
+        ],
+        [
+          40,
+          40
+        ],
+        [
+          40,
+          40
+        ],
+        [
+          40,
+          40
+        ]
+      ]
+    },
+    {
+      "key": "vayikra",
+      "book_key": "tanach-vayikra",
+      "name_he": "ויקרא",
+      "name_en": "Vayikra",
+      "sort_order": 1,
+      "aliyah_ranges": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          5
+        ]
+      ]
+    },
+    {
+      "key": "tzav",
+      "book_key": "tanach-vayikra",
+      "name_he": "צו",
+      "name_en": "Tzav",
+      "sort_order": 2,
+      "aliyah_ranges": [
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          8
+        ]
+      ]
+    },
+    {
+      "key": "shmini",
+      "book_key": "tanach-vayikra",
+      "name_he": "שמיני",
+      "name_en": "Shmini",
+      "sort_order": 3,
+      "aliyah_ranges": [
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          11
+        ]
+      ]
+    },
+    {
+      "key": "tazria",
+      "book_key": "tanach-vayikra",
+      "name_he": "תזריע",
+      "name_en": "Tazria",
+      "sort_order": 4,
+      "aliyah_ranges": [
+        [
+          12,
+          12
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ]
+      ]
+    },
+    {
+      "key": "metzora",
+      "book_key": "tanach-vayikra",
+      "name_he": "מצורע",
+      "name_en": "Metzora",
+      "sort_order": 5,
+      "aliyah_ranges": [
+        [
+          14,
+          14
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          15,
+          15
+        ]
+      ]
+    },
+    {
+      "key": "acharei-mos",
+      "book_key": "tanach-vayikra",
+      "name_he": "אחרי מות",
+      "name_en": "Acharei Mos",
+      "sort_order": 6,
+      "aliyah_ranges": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          18
+        ]
+      ]
+    },
+    {
+      "key": "kedoshim",
+      "book_key": "tanach-vayikra",
+      "name_he": "קדושים",
+      "name_en": "Kedoshim",
+      "sort_order": 7,
+      "aliyah_ranges": [
+        [
+          19,
+          19
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          20
+        ]
+      ]
+    },
+    {
+      "key": "emor",
+      "book_key": "tanach-vayikra",
+      "name_he": "אמור",
+      "name_en": "Emor",
+      "sort_order": 8,
+      "aliyah_ranges": [
+        [
+          21,
+          21
+        ],
+        [
+          21,
+          22
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          24,
+          24
+        ]
+      ]
+    },
+    {
+      "key": "behar",
+      "book_key": "tanach-vayikra",
+      "name_he": "בהר",
+      "name_en": "Behar",
+      "sort_order": 9,
+      "aliyah_ranges": [
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          26
+        ],
+        [
+          26,
+          26
+        ]
+      ]
+    },
+    {
+      "key": "bechukosai",
+      "book_key": "tanach-vayikra",
+      "name_he": "בחוקותי",
+      "name_en": "Bechukosai",
+      "sort_order": 10,
+      "aliyah_ranges": [
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          27
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          27,
+          27
+        ]
+      ]
+    },
+    {
+      "key": "bamidbar",
+      "book_key": "tanach-bamidbar",
+      "name_he": "במדבר",
+      "name_en": "Bamidbar",
+      "sort_order": 1,
+      "aliyah_ranges": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ]
+    },
+    {
+      "key": "naso",
+      "book_key": "tanach-bamidbar",
+      "name_he": "נשא",
+      "name_en": "Naso",
+      "sort_order": 2,
+      "aliyah_ranges": [
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "key": "behaaloscha",
+      "book_key": "tanach-bamidbar",
+      "name_he": "בהעלותך",
+      "name_en": "Behaaloscha",
+      "sort_order": 3,
+      "aliyah_ranges": [
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          12,
+          12
+        ]
+      ]
+    },
+    {
+      "key": "shelach",
+      "book_key": "tanach-bamidbar",
+      "name_he": "שלח לך",
+      "name_en": "Shelach",
+      "sort_order": 4,
+      "aliyah_ranges": [
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          14
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          15,
+          15
+        ]
+      ]
+    },
+    {
+      "key": "korach",
+      "book_key": "tanach-bamidbar",
+      "name_he": "קרח",
+      "name_en": "Korach",
+      "sort_order": 5,
+      "aliyah_ranges": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          18
+        ]
+      ]
+    },
+    {
+      "key": "chukas",
+      "book_key": "tanach-bamidbar",
+      "name_he": "חקת",
+      "name_en": "Chukas",
+      "sort_order": 6,
+      "aliyah_ranges": [
+        [
+          19,
+          19
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          21
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          21,
+          22
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          22,
+          22
+        ]
+      ]
+    },
+    {
+      "key": "balak",
+      "book_key": "tanach-bamidbar",
+      "name_he": "בלק",
+      "name_en": "Balak",
+      "sort_order": 7,
+      "aliyah_ranges": [
+        [
+          22,
+          22
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          25
+        ]
+      ]
+    },
+    {
+      "key": "pinchas",
+      "book_key": "tanach-bamidbar",
+      "name_he": "פינחס",
+      "name_en": "Pinchas",
+      "sort_order": 8,
+      "aliyah_ranges": [
+        [
+          25,
+          25
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          27
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          28,
+          29
+        ],
+        [
+          29,
+          30
+        ],
+        [
+          30,
+          30
+        ]
+      ]
+    },
+    {
+      "key": "matos",
+      "book_key": "tanach-bamidbar",
+      "name_he": "מטות",
+      "name_en": "Matos",
+      "sort_order": 9,
+      "aliyah_ranges": [
+        [
+          30,
+          30
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32,
+          32
+        ]
+      ]
+    },
+    {
+      "key": "masei",
+      "book_key": "tanach-bamidbar",
+      "name_he": "מסעי",
+      "name_en": "Masei",
+      "sort_order": 10,
+      "aliyah_ranges": [
+        [
+          33,
+          33
+        ],
+        [
+          33,
+          33
+        ],
+        [
+          33,
+          34
+        ],
+        [
+          34,
+          35
+        ],
+        [
+          35,
+          35
+        ],
+        [
+          35,
+          36
+        ],
+        [
+          36,
+          36
+        ]
+      ]
+    },
+    {
+      "key": "devarim",
+      "book_key": "tanach-devarim",
+      "name_he": "דברים",
+      "name_en": "Devarim",
+      "sort_order": 1,
+      "aliyah_ranges": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ]
+      ]
+    },
+    {
+      "key": "vaeschanan",
+      "book_key": "tanach-devarim",
+      "name_he": "ואתחנן",
+      "name_en": "Vaeschanan",
+      "sort_order": 2,
+      "aliyah_ranges": [
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "key": "eikev",
+      "book_key": "tanach-devarim",
+      "name_he": "עקב",
+      "name_en": "Eikev",
+      "sort_order": 3,
+      "aliyah_ranges": [
+        [
+          7,
+          8
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          11
+        ]
+      ]
+    },
+    {
+      "key": "reeh",
+      "book_key": "tanach-devarim",
+      "name_he": "ראה",
+      "name_en": "Reeh",
+      "sort_order": 4,
+      "aliyah_ranges": [
+        [
+          11,
+          11
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ]
+    },
+    {
+      "key": "shoftim",
+      "book_key": "tanach-devarim",
+      "name_he": "שופטים",
+      "name_en": "Shoftim",
+      "sort_order": 5,
+      "aliyah_ranges": [
+        [
+          16,
+          17
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          19
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          21
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          21,
+          21
+        ]
+      ]
+    },
+    {
+      "key": "ki-seitzei",
+      "book_key": "tanach-devarim",
+      "name_he": "כי תצא",
+      "name_en": "Ki Seitzei",
+      "sort_order": 6,
+      "aliyah_ranges": [
+        [
+          21,
+          21
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          25
+        ]
+      ]
+    },
+    {
+      "key": "ki-savo",
+      "book_key": "tanach-devarim",
+      "name_he": "כי תבא",
+      "name_en": "Ki Savo",
+      "sort_order": 7,
+      "aliyah_ranges": [
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          27
+        ],
+        [
+          27,
+          28
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          29,
+          29
+        ],
+        [
+          29,
+          29
+        ]
+      ]
+    },
+    {
+      "key": "nitzavim",
+      "book_key": "tanach-devarim",
+      "name_he": "נצבים",
+      "name_en": "Nitzavim",
+      "sort_order": 8,
+      "aliyah_ranges": [
+        [
+          29,
+          29
+        ],
+        [
+          29,
+          30
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          30,
+          30
+        ]
+      ]
+    },
+    {
+      "key": "vayeilech",
+      "book_key": "tanach-devarim",
+      "name_he": "וילך",
+      "name_en": "Vayeilech",
+      "sort_order": 9,
+      "aliyah_ranges": [
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ]
+      ]
+    },
+    {
+      "key": "haazinu",
+      "book_key": "tanach-devarim",
+      "name_he": "האזינו",
+      "name_en": "Haazinu",
+      "sort_order": 10,
+      "aliyah_ranges": [
+        [
+          32,
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32,
+          32
+        ]
+      ]
+    },
+    {
+      "key": "vzos-habrachah",
+      "book_key": "tanach-devarim",
+      "name_he": "וזאת הברכה",
+      "name_en": "Vzos Habrachah",
+      "sort_order": 11,
+      "aliyah_ranges": [
+        [
+          33,
+          33
+        ],
+        [
+          33,
+          33
+        ],
+        [
+          33,
+          33
+        ],
+        [
+          33,
+          34
+        ],
+        [
+          34,
+          34
+        ],
+        [
+          34,
+          34
+        ],
+        [
+          34,
+          34
+        ]
+      ]
+    }
+  ],
+  "aliyot": [
+    {
+      "key": "kohen",
+      "name_he": "כהן",
+      "name_en": "Kohen",
+      "sort_order": 1,
+      "in_study": true
+    },
+    {
+      "key": "levi",
+      "name_he": "לוי",
+      "name_en": "Levi",
+      "sort_order": 2,
+      "in_study": true
+    },
+    {
+      "key": "shlishi",
+      "name_he": "שלישי",
+      "name_en": "Shlishi",
+      "sort_order": 3,
+      "in_study": true
+    },
+    {
+      "key": "revii",
+      "name_he": "רביעי",
+      "name_en": "Revi'i",
+      "sort_order": 4,
+      "in_study": true
+    },
+    {
+      "key": "chamishi",
+      "name_he": "חמישי",
+      "name_en": "Chamishi",
+      "sort_order": 5,
+      "in_study": true
+    },
+    {
+      "key": "shishi",
+      "name_he": "שישי",
+      "name_en": "Shishi",
+      "sort_order": 6,
+      "in_study": true
+    },
+    {
+      "key": "shvii",
+      "name_he": "שביעי",
+      "name_en": "Shvi'i",
+      "sort_order": 7,
+      "in_study": true
+    },
+    {
+      "key": "maftir",
+      "name_he": "מפטיר",
+      "name_en": "Maftir",
+      "sort_order": 8,
+      "in_study": false
+    }
+  ]
+}

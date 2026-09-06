@@ -1,0 +1,29 @@
+{
+  "StudyProgress": {
+    "name": "StudyProgress",
+    "type": "object",
+    "properties": {
+      "path_key": {"type": "string", "description": "Pipe-joined path to a book, e.g. תנ״ך|תורה|בראשית (or גמרא|ברכות)"},
+      "completed": {"type": "array", "items": {"type": "number"}, "default": [], "description": "Completed leaf indices (1-based) within the book"}
+    },
+    "required": ["path_key", "completed"],
+    "rls": {"read": {"created_by_id": "{{user.id}}"}, "create": {"created_by_id": "{{user.id}}"}, "update": {"created_by_id": "{{user.id}}"}, "delete": {"created_by_id": "{{user.id}}"}}
+  },
+  "AliyahLog": {
+    "name": "AliyahLog",
+    "type": "object",
+    "properties": {
+      "sefer": {"type": "string", "description": "Sefer name, e.g. בראשית"},
+      "parashah": {"type": "string", "description": "Weekly portion, e.g. בראשית"},
+      "aliyah": {"type": "string", "description": "Honor name, e.g. שלישי (one of כהן/לוי/שלישי/רביעי/חמישי/שישי/שביעי/מפטיר)"},
+      "date": {"type": "string", "format": "date", "description": "תאריך — date the aliyah was received"},
+      "synagogue": {"type": "string", "description": "בית כנסת — synagogue / location"},
+      "notes": {"type": "string", "description": "הערות — free-form notes"}
+    },
+    "required": ["sefer", "parashah", "aliyah"],
+    "rls": {"read": {"created_by_id": "{{user.id}}"}, "create": {"created_by_id": "{{user.id}}"}, "update": {"created_by_id": "{{user.id}}"}, "delete": {"created_by_id": "{{user.id}}"}}
+  },
+  "User (built-in)": {
+    "properties": {"email": "string", "full_name": "string", "role": "admin | user"}
+  }
+}

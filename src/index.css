@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 22% 9%;
+    --foreground: 210 25% 96%;
+    --card: 222 20% 12%;
+    --card-foreground: 210 25% 96%;
+    --primary: 152 56% 48%;
+    --primary-foreground: 222 22% 9%;
+    --secondary: 222 18% 18%;
+    --secondary-foreground: 210 25% 96%;
+    --muted: 222 18% 16%;
+    --muted-foreground: 220 14% 62%;
+    --accent: 152 40% 20%;
+    --accent-foreground: 210 25% 96%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 210 25% 96%;
+    --border: 222 16% 20%;
+    --input: 222 16% 22%;
+    --ring: 152 56% 48%;
+    --radius: 1.1rem;
+    --font-body: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Frank Ruhl Libre', 'Heebo', serif;
+    color-scheme: dark;
+  }
+  * { @apply border-border; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+  }
+  ::selection { background: hsl(var(--primary) / 0.3); }
+  input, textarea, select { @apply bg-input text-foreground; }
+  input[type="date"] { color-scheme: dark; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 9999px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .safe-bottom { padding-bottom: max(6rem, calc(env(safe-area-inset-bottom) + 5rem)); }
+  .safe-top { padding-top: env(safe-area-inset-top); }
+  .tap { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+}
