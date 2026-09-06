@@ -122,7 +122,7 @@ Three ways, from simplest to most automatic.
 
 **1. Download a file.** Settings → "Download study progress (CSV)" or "Download aliyos log (CSV)". Opens in Excel or Google Sheets, with Hebrew and English names side by side. Works in local mode and cloud mode.
 
-**2. Live Google Sheet, for every user (cloud mode).** No Google sign-in needed. In the app: Settings → Live Google Sheet → "Create my link". The app shows three short formulas. Open a new Google Sheet, click cell A1, paste one formula. Do the same in two more tabs for the other two formulas. Google refreshes the data by itself about once an hour. If the link is ever shared by mistake, press "Make a new link" and the old one stops working.
+**2. Live Google Sheet, for every user (cloud mode).** No Google sign-in needed. In the app: Settings → Live Google Sheet → "Create my link". The app shows one formula. Open a new Google Sheet, click cell A1, paste the formula, press Enter. In a few seconds the tab fills with one row per thing that happened: what was learned or which aliyah was received, how many times, the first and last time, and details. Google refreshes it by itself about once an hour. Dates are written as text with the Hebrew date next to them (for example `2026-09-06 · כ״ד אלול תשפ״ו`), because Google would otherwise show a bare day number such as 46271. Under "More views" the app offers extra formulas, one tab each: progress by sefer, by parashah, every single completion, and aliyos only. If the link is ever shared by mistake, press "Make a new link" and the old one stops working.
 
 The formulas call a small piece of server code that runs on Supabase for free. It has to be installed once by the owner (you), not by each user:
 
@@ -130,23 +130,23 @@ The formulas call a small piece of server code that runs on Supabase for free. I
 2. Name it exactly `sheet-export`. Paste the contents of `supabase/functions/sheet-export/index.ts` and deploy.
 3. Open the function's page → **Details / Settings** and turn **off** "Enforce JWT verification" (Google Sheets cannot send a login header; the secret link is the protection instead).
 4. Make sure `supabase/schema.sql` has been run; it creates the `sheet_links` table the function reads.
+5. When `index.ts` changes later, open the function → Code in the dashboard, paste the new file over the old one, and deploy again. The old version keeps running until you do.
 
-**One paste instead of four (the template).** Make a Google Sheet once with five tabs and share it as a template. Users press one button in the app, get their own copy, paste their link into one cell, and all tabs fill themselves. Build it like this:
+**One button instead of a paste (the template, optional).** Make a Google Sheet once and share it as a template. Users press one button in the app, get their own copy, paste their link into one cell, and the tabs fill themselves. Build it like this:
 
 1. New Google Sheet. Name the first tab `Setup`. In A1 write "Paste your link from the app here:" and leave B1 empty (color it yellow).
-2. Add tabs named `Study`, `Aliyos`, `By Parashah`, `Sefarim`. In cell A1 of each, paste the matching formula:
+2. Add a tab named `Torah Tracker`. In its cell A1 paste:
 
 ```
-=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=study"))
-=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=aliyos"))
-=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=parashah"))
-=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=books"))
+=IF(Setup!B1="","Paste your link in Setup!B1",IMPORTDATA(Setup!B1&"&type=all&lang=en-he"))
 ```
+
+   Optional extra tabs use the same formula with `type=books`, `type=parashah`, `type=study` or `type=aliyos`.
 
 3. Share → "Anyone with the link" → Viewer. Copy the sheet's address.
 4. Put that address in `.env` as `VITE_SHEET_TEMPLATE_URL` (and as a GitHub repository secret with the same name), then republish. The app's Settings screen now shows "Open the sheet template", which opens Google's "Make a copy" page for the user.
 
-Tab three, "By parashah", is one row per parashah with the aliyos learned and the aliyos received, which is the "page per Torah portion" view. Tab four, "Sefarim summary", is one row per sefer with how much was learned and how many times in full.
+The address also accepts `lang=he` (Hebrew headers and names), `lang=en` (English headers, transliterated names) or `lang=en-he` (English headers, Hebrew names), and `tz=` with the user's time zone so late-night entries land on the right day. The app fills both in automatically. "By parashah" is one row per parashah with the aliyos learned and received, which is the "page per Torah portion" view.
 
 **3. Owner's power-user sync (optional).** `tools/google-sheets-sync.gs` is a Google Apps Script that copies everyone's data into one spreadsheet every hour using the Supabase service key. Setup steps are at the top of that file. Only for the owner.
 

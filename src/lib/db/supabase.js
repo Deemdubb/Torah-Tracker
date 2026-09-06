@@ -188,7 +188,14 @@ export function createSupabaseBackend(url, key) {
         return token;
       },
       base: (token) => `${url.replace(/\/$/, '')}/functions/v1/sheet-export?token=${token}`,
-      url: (token, type) => `${url.replace(/\/$/, '')}/functions/v1/sheet-export?token=${token}&type=${type}`,
+      // type: all (default) | study | aliyos | parashah | books. lang: he | en | en-he. tz: the user's time zone.
+      url: (token, { type, lang, tz } = {}) => {
+        const q = new URLSearchParams({ token });
+        if (type) q.set('type', type);
+        if (lang) q.set('lang', lang);
+        if (tz) q.set('tz', tz);
+        return `${url.replace(/\/$/, '')}/functions/v1/sheet-export?${q}`;
+      },
     },
     pendingCount: () => readQueue().length,
     flush,
