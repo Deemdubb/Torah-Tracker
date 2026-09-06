@@ -80,7 +80,7 @@ export default function DashboardPage() {
         <Stat label={t('statLearnedTotal')} value={study.total} icon={BookOpen} />
         <Stat label={t('statLast7')} value={study.last7} icon={CalendarDays} />
         <Stat label={t('statLast30')} value={study.last30} icon={CalendarDays} />
-        <Stat label={t('statStreak')} value={`${study.streak} ${t('days')}`} icon={Flame} />
+        <Stat label={t('statStreak')} value={study.streak} icon={Flame} />
       </div>
 
       <Card className="p-4">
