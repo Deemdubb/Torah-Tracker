@@ -194,7 +194,7 @@ export function createSupabaseBackend(url, key) {
         if (type) q.set('type', type);
         if (lang) q.set('lang', lang);
         if (tz) q.set('tz', tz);
-        return `${url.replace(/\/$/, '')}/functions/v1/sheet-export?${q}`;
+        return `${url.replace(/\/$/, '')}/functions/v1/sheet-export?${q.toString().replace(/%2F/g, '/')}`; // keep America/New_York readable
       },
     },
     pendingCount: () => readQueue().length,

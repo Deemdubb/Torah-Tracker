@@ -80,7 +80,7 @@ export default function SheetLinkCard() {
               )}
               <FormulaRow label={t('sheetTabAll')} formula={formula()} primary />
               <ol className="text-sm space-y-1 list-decimal ps-5">
-                <li>{t('sheetStep1')} <a href="https://sheets.new" target="_blank" rel="noreferrer" className="text-primary underline inline-flex items-center gap-1">{t('sheetOpenNew')}<ExternalLink className="w-3 h-3" /></a></li>
+                <li><a href="https://sheets.new" target="_blank" rel="noreferrer" className="text-primary underline inline-flex items-center gap-1">{t('sheetOpenNew')}<ExternalLink className="w-3 h-3" /></a></li>
                 <li>{t('sheetStep2')}</li>
                 <li>{t('sheetStep3')}</li>
               </ol>
