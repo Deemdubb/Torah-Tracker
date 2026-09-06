@@ -60,7 +60,12 @@ export const STRINGS = {
     sheetHow: 'פתח גיליון Google חדש, לחץ על התא הראשון (A1) בכל לשונית, והדבק את הנוסחה. כל נוסחה מקבלת לשונית משלה.',
     sheetTabStudy: 'התקדמות לימוד', sheetTabAliyos: 'יומן עליות', sheetTabParashah: 'לפי פרשה',
     sheetWarning: 'כל מי שיש לו את הקישור יכול לראות את הנתונים. אם שיתפת אותו בטעות, צור קישור חדש.',
-    sheetCloudOnly: 'גיליון Google חי זמין רק במצב ענן.', copy: 'העתק', copied: 'הועתק', required: 'שדה חובה', notListsFile: 'הקובץ הזה אינו קובץ רשימות',
+    sheetCloudOnly: 'גיליון Google חי זמין רק במצב ענן.', copy: 'העתק', copied: 'הועתק',
+    password: 'סיסמה', signIn: 'כניסה', createAccount: 'צור חשבון', loginSubtitlePassword: 'הכנס אימייל וסיסמה',
+    useMagicLink: 'שלח לי קישור כניסה במייל במקום', usePassword: 'כניסה עם סיסמה במקום',
+    passwordTooShort: 'הסיסמה צריכה להיות באורך 6 תווים לפחות', checkEmailConfirm: 'החשבון נוצר. בדוק את האימייל כדי לאשר אותו, ואז היכנס.',
+    setPassword: 'הגדר או שנה סיסמה', newPassword: 'סיסמה חדשה', confirmPassword: 'אימות סיסמה', passwordMismatch: 'הסיסמאות לא זהות',
+    passwordSaved: 'הסיסמה נשמרה. מעכשיו אפשר להיכנס עם אימייל וסיסמה בכל מכשיר.', savePassword: 'שמור סיסמה', required: 'שדה חובה', notListsFile: 'הקובץ הזה אינו קובץ רשימות',
   },
   en: {
     brandMain: 'Torah Progress Tracker', brandSub: 'מעקב תורה',
@@ -105,7 +110,12 @@ export const STRINGS = {
     sheetHow: 'Open a new Google Sheet, click the first cell (A1) of a tab, and paste the formula. Each formula gets its own tab.',
     sheetTabStudy: 'Study progress', sheetTabAliyos: 'Aliyos log', sheetTabParashah: 'By parashah',
     sheetWarning: 'Anyone who has the link can see the data. If you shared it by mistake, make a new link.',
-    sheetCloudOnly: 'The live Google Sheet is available in cloud mode only.', copy: 'Copy', copied: 'Copied', required: 'Required', notListsFile: 'This is not a lists file',
+    sheetCloudOnly: 'The live Google Sheet is available in cloud mode only.', copy: 'Copy', copied: 'Copied',
+    password: 'Password', signIn: 'Sign in', createAccount: 'Create account', loginSubtitlePassword: 'Enter your email and password',
+    useMagicLink: 'Email me a sign-in link instead', usePassword: 'Sign in with a password instead',
+    passwordTooShort: 'The password needs at least 6 characters', checkEmailConfirm: 'Account created. Check your email to confirm it, then sign in.',
+    setPassword: 'Set or change password', newPassword: 'New password', confirmPassword: 'Confirm password', passwordMismatch: 'The passwords do not match',
+    passwordSaved: 'Password saved. From now on you can sign in with email and password on any device.', savePassword: 'Save password', required: 'Required', notListsFile: 'This is not a lists file',
   },
 };
 

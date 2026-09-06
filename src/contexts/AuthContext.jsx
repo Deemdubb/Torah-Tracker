@@ -29,6 +29,9 @@ export function AuthProvider({ children }) {
     isAdmin: user?.role === 'admin',
     isLocalMode,
     signInWithEmail: (email) => db.auth.signInWithEmail(email),
+    signInWithPassword: (email, password) => db.auth.signInWithPassword(email, password),
+    signUpWithPassword: (email, password) => db.auth.signUpWithPassword(email, password),
+    updatePassword: (password) => db.auth.updatePassword(password),
     signInWithGoogle: () => db.auth.signInWithGoogle(),
     signOut: async () => { await db.auth.signOut(); setUser(null); },
   }), [user]);

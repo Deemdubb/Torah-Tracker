@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react';
-import { Download, Upload, LogOut, Smartphone } from 'lucide-react';
+import { Download, Upload, LogOut, Smartphone, KeyRound } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useData } from '@/contexts/DataContext';
 import LanguageToggle from '@/components/LanguageToggle';
 import SheetLinkCard from '@/components/SheetLinkCard';
-import { Banner, Button, Card } from '@/components/ui';
+import { Banner, Button, Card, Field, Input } from '@/components/ui';
 import { downloadText, readFileAsText, toCsv } from '@/lib/csv';
 import { leafLabel } from '@/lib/i18n';
 
@@ -13,7 +13,11 @@ const today = () => new Date().toISOString().slice(0, 10);
 
 export default function SettingsPage() {
   const { t } = useLang();
-  const { user, isLocalMode, signOut } = useAuth();
+  const { user, isLocalMode, signOut, updatePassword } = useAuth();
+  const [pw1, setPw1] = useState('');
+  const [pw2, setPw2] = useState('');
+  const [pwMsg, setPwMsg] = useState('');
+  const [pwBusy, setPwBusy] = useState(false);
   const { idx, pm, logMap, exportBackup, importBackup, setError } = useData();
   const fileRef = useRef(null);
   const [msg, setMsg] = useState('');
@@ -99,6 +103,21 @@ export default function SettingsPage() {
         <Card className="p-4 space-y-3">
           <div className="font-semibold">{t('account')}</div>
           <p className="text-sm text-muted-foreground">{t('signedInAs')} <span dir="ltr">{user?.email}</span>{user?.role === 'admin' ? ` · ${t('tabAdmin')}` : ''}</p>
+          <form className="space-y-3 pt-1" onSubmit={async (e) => {
+            e.preventDefault(); setPwMsg('');
+            if (pw1.length < 6) { setPwMsg(t('passwordTooShort')); return; }
+            if (pw1 !== pw2) { setPwMsg(t('passwordMismatch')); return; }
+            setPwBusy(true);
+            try { await updatePassword(pw1); setPw1(''); setPw2(''); setPwMsg(t('passwordSaved')); } catch (err) { setPwMsg(err.message || String(err)); } finally { setPwBusy(false); }
+          }}>
+            <div className="text-sm font-medium flex items-center gap-2"><KeyRound className="w-4 h-4" />{t('setPassword')}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <Field label={t('newPassword')}><Input type="password" autoComplete="new-password" minLength={6} value={pw1} onChange={(e) => setPw1(e.target.value)} dir="ltr" /></Field>
+              <Field label={t('confirmPassword')}><Input type="password" autoComplete="new-password" minLength={6} value={pw2} onChange={(e) => setPw2(e.target.value)} dir="ltr" /></Field>
+            </div>
+            {pwMsg && <Banner tone={pwMsg === t('passwordSaved') ? 'info' : 'error'}>{pwMsg}</Banner>}
+            <Button type="submit" variant="outline" disabled={pwBusy}>{pwBusy ? t('saving') : t('savePassword')}</Button>
+          </form>
           <Button variant="destructive" onClick={signOut}><LogOut className="w-4 h-4" />{t('signOut')}</Button>
         </Card>
       )}

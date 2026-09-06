@@ -94,6 +94,13 @@ export function createSupabaseBackend(url, key) {
         return () => data.subscription.unsubscribe();
       },
       async signInWithEmail(email) { check(await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo() } })); },
+      async signInWithPassword(email, password) { check(await sb.auth.signInWithPassword({ email, password })); },
+      // Returns true when the account is ready to use, false when Supabase first wants the email confirmed.
+      async signUpWithPassword(email, password) {
+        const data = check(await sb.auth.signUp({ email, password, options: { emailRedirectTo: redirectTo() } }));
+        return !!data?.session;
+      },
+      async updatePassword(password) { check(await sb.auth.updateUser({ password })); },
       async signInWithGoogle() { check(await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectTo() } })); },
       async signOut() { await sb.auth.signOut(); },
     },
