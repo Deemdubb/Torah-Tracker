@@ -67,6 +67,10 @@ An aliyah can be received more than once. Tap the honor to see every entry, edit
 
 **Already set up Supabase before 2026-09-06?** Run `supabase/migrations/2026-09-06_repeats_and_connected_parshiyos.sql` once in the SQL Editor. It removes the old one-per-item rule and adds the new columns. New installs get all of this from `schema.sql` directly.
 
+## Home content filters (GenTech, Livigent, TAG, Netspark and similar)
+
+Many users run a content filter that inspects every web response. Testing showed such a filter breaks long JSON answers from Supabase but lets plain text through, so the app loads all its data as plain-text CSV. If a filter still blocks the app, ask the filter company to allow `*.supabase.co` and the app's address.
+
 ## Set up cloud mode (Supabase)
 
 1. Go to https://supabase.com, create a free account and a new project. Pick a strong database password and save it somewhere.

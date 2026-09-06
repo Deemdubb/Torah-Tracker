@@ -3,6 +3,7 @@
 // Progress writes that fail because you are offline are queued and retried later.
 import { createClient } from '@supabase/supabase-js';
 import seed from '@/data/referenceData.json';
+import { csvToObjects } from '@/lib/csvParse';
 
 const REF_TABLES = ['categories', 'sections', 'books', 'parshiyot', 'aliyot'];
 const QUEUE_KEY = 'tt.queue';
@@ -57,16 +58,21 @@ export function createSupabaseBackend(url, key) {
     return data?.session?.user?.id;
   }
 
+  // All list reads come back as plain-text CSV (see src/lib/csvParse.js for why), then become objects here.
+  async function readCsv(query) {
+    const { data, error } = await query.csv();
+    if (error) throw error;
+    return csvToObjects(data);
+  }
   // Supabase returns at most 1000 rows per request. A serious learner has more progress rows
   // than that (Gemara alone is 2696 pages), so read in pages until a page comes back short.
   const PAGE = 1000;
   async function fetchAll(query) {
     const out = [];
     for (let from = 0; ; from += PAGE) {
-      const { data, error } = await query().range(from, from + PAGE - 1);
-      if (error) throw error;
-      out.push(...(data || []));
-      if (!data || data.length < PAGE) return out;
+      const rows = await readCsv(query().range(from, from + PAGE - 1));
+      out.push(...rows);
+      if (rows.length < PAGE) return out;
     }
   }
 
@@ -145,8 +151,8 @@ export function createSupabaseBackend(url, key) {
     refs: {
       async load() {
         // all five lists at the same time instead of one after another
-        const results = await Promise.all(REF_TABLES.map((t) => sb.from(t).select('*').order('sort_order')));
-        return Object.fromEntries(REF_TABLES.map((t, i) => [t, check(results[i])]));
+        const results = await Promise.all(REF_TABLES.map((t) => readCsv(sb.from(t).select('*').order('sort_order'))));
+        return Object.fromEntries(REF_TABLES.map((t, i) => [t, results[i]]));
       },
       async save(table, row) { return check(await sb.from(table).upsert(row, { onConflict: 'key' }).select().single()); },
       async remove(table, key) { check(await sb.from(table).delete().eq('key', key)); },
@@ -192,8 +198,9 @@ export function createSupabaseBackend(url, key) {
       const step = async (name, fn) => { const t0 = performance.now(); try { const info = await fn(); steps.push({ name, ok: true, ms: Math.round(performance.now() - t0), info }); } catch (e) { steps.push({ name, ok: false, ms: Math.round(performance.now() - t0), info: e?.message || String(e) }); } };
       await step('auth', async () => { const r = await fetchWithTimeout(`${url}/auth/v1/health`, { headers: { apikey: key } }); return `HTTP ${r.status}`; });
       await step('session', async () => { const { data } = await sb.auth.getSession(); return data?.session ? `user ${data.session.user.email}` : 'no session'; });
-      await step('lists', async () => { const { data, error } = await sb.from('categories').select('key').limit(3); if (error) throw error; return `${data.length} rows`; });
-      await step('progress', async () => { const { data, error } = await sb.from('study_progress').select('id').limit(1); if (error) throw error; return `${data.length} rows`; });
+      await step('lists (text)', async () => { const rows = await readCsv(sb.from('books').select('key,name_he')); return `${rows.length} rows`; });
+      await step('lists (json)', async () => { const { data, error } = await sb.from('books').select('key,name_he'); if (error) throw error; return `${data.length} rows`; });
+      await step('progress (text)', async () => { const rows = await readCsv(sb.from('study_progress').select('*').limit(200)); return `${rows.length} rows`; });
       await step('function', async () => { const r = await fetchWithTimeout(`${url}/functions/v1/sheet-export`); return `HTTP ${r.status}`; });
       return steps;
     },
