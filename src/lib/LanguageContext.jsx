@@ -6,7 +6,7 @@ const STORAGE_KEY = 'torah_lang_mode';
 
 export function LanguageProvider({ children }) {
   const [mode, setModeState] = useState(() => {
-    try { return localStorage.getItem(STORAGE_KEY) || 'he'; } catch { return 'he'; }
+    try { return localStorage.getItem(STORAGE_KEY) || 'en-he'; } catch { return 'en-he'; }
   });
   const setMode = (m) => {
     setModeState(m);

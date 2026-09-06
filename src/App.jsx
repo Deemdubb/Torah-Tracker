@@ -7,6 +7,7 @@ import Spinner from '@/components/Spinner';
 import StudyModule from '@/pages/StudyModule';
 import AliyosModule from '@/pages/AliyosModule';
 import SettingsPage from '@/pages/SettingsPage';
+import DashboardPage from '@/pages/DashboardPage';
 import LoginPage from '@/pages/LoginPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import AdminRoutes from '@/pages/admin/AdminRoutes';
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="/" element={<Navigate to="/study" replace />} />
                 <Route path="/study/*" element={<StudyModule />} />
                 <Route path="/aliyos/*" element={<AliyosModule />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route element={<RequireAdmin />}>
                   <Route path="/admin/*" element={<AdminRoutes />} />

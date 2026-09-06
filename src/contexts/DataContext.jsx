@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { db } from '@/lib/db';
 import { useAuth } from './AuthContext';
-import { buildIndex, logMapFrom, logKey, progressMapFrom, scopeKey, siblingsOf } from '@/lib/model';
+import { buildIndex, logMapFrom, logKey, progressMapFrom, siblingsOf } from '@/lib/model';
 
 const DataContext = createContext(null);
 const EMPTY = { categories: [], sections: [], books: [], parshiyot: [], aliyot: [] };
@@ -11,7 +11,8 @@ const EMPTY = { categories: [], sections: [], books: [], parshiyot: [], aliyot: 
 export function DataProvider({ children }) {
   const { user, isAdmin } = useAuth();
   const [refs, setRefs] = useState(EMPTY);
-  const [pm, setPm] = useState(() => new Map());
+  const [rows, setRows] = useState([]);
+  const pm = useMemo(() => progressMapFrom(rows), [rows]);
   const [logMap, setLogMap] = useState(() => new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +24,7 @@ export function DataProvider({ children }) {
       let r = await db.refs.load();
       if ((!r.categories || r.categories.length === 0) && isAdmin) r = await db.refs.seedDefaults();
       const [progress, log] = await Promise.all([db.progress.load(), db.aliyahLog.load()]);
-      setRefs(r); setPm(progressMapFrom(progress)); setLogMap(logMapFrom(log));
+      setRefs(r); setRows(progress || []); setLogMap(logMapFrom(log));
     } catch (e) { console.error(e); setError(e.message || String(e)); }
     finally { setLoading(false); }
   }, [isAdmin]);
@@ -40,42 +41,36 @@ export function DataProvider({ children }) {
   const idx = useMemo(() => buildIndex(refs), [refs]);
 
   // ---- study progress ----
-  const updateScope = (scope, fn) => setPm((prev) => {
-    const next = new Map(prev);
-    const k = scopeKey(scope.book_key, scope.parashah_key);
-    const set = new Set(next.get(k) || []);
-    fn(set);
-    if (set.size) next.set(k, set); else next.delete(k);
-    return next;
-  });
+  const rowKey = (r) => `${r.book_key}|${r.parashah_key || ''}|${r.item}`;
+  const inScope = (scope) => (r) => r.book_key === scope.book_key && (r.parashah_key || '') === (scope.parashah_key || '');
+  const newRow = (scope, item) => ({ book_key: scope.book_key, parashah_key: scope.parashah_key || '', item: String(item), completed_at: new Date().toISOString() });
 
   const toggleItem = useCallback(async (scope, item) => {
-    const k = scopeKey(scope.book_key, scope.parashah_key);
-    const had = pm.get(k)?.has(String(item));
-    updateScope(scope, (s) => (had ? s.delete(String(item)) : s.add(String(item))));
+    const key = rowKey({ ...scope, item: String(item) });
+    const had = rows.some((r) => rowKey(r) === key);
+    const prev = rows;
+    setRows(had ? rows.filter((r) => rowKey(r) !== key) : [...rows, newRow(scope, item)]);
     try {
       if (had) await db.progress.remove({ ...scope, items: [String(item)] });
       else await db.progress.add([{ ...scope, item: String(item) }]);
-    } catch (e) {
-      console.error(e); setError(e.message || String(e));
-      updateScope(scope, (s) => (had ? s.add(String(item)) : s.delete(String(item))));
-    }
-  }, [pm]);
+    } catch (e) { console.error(e); setError(e.message || String(e)); setRows(prev); }
+  }, [rows]);
 
   const setAllItems = useCallback(async (scope, items, on) => {
-    const k = scopeKey(scope.book_key, scope.parashah_key);
-    const before = new Set(pm.get(k) || []);
-    updateScope(scope, (s) => { s.clear(); if (on) items.forEach((i) => s.add(String(i))); });
-    try {
-      if (on) {
-        const rows = items.filter((i) => !before.has(String(i))).map((i) => ({ ...scope, item: String(i) }));
-        if (rows.length) await db.progress.add(rows);
-      } else await db.progress.remove({ ...scope });
-    } catch (e) {
-      console.error(e); setError(e.message || String(e));
-      updateScope(scope, (s) => { s.clear(); before.forEach((i) => s.add(i)); });
+    const prev = rows;
+    const isMine = inScope(scope);
+    if (on) {
+      const have = new Set(rows.filter(isMine).map((r) => String(r.item)));
+      const missing = items.filter((i) => !have.has(String(i)));
+      setRows([...rows, ...missing.map((i) => newRow(scope, i))]);
+      try { if (missing.length) await db.progress.add(missing.map((i) => ({ ...scope, item: String(i) }))); }
+      catch (e) { console.error(e); setError(e.message || String(e)); setRows(prev); }
+    } else {
+      setRows(rows.filter((r) => !isMine(r)));
+      try { await db.progress.remove({ ...scope }); }
+      catch (e) { console.error(e); setError(e.message || String(e)); setRows(prev); }
     }
-  }, [pm]);
+  }, [rows]);
 
   // ---- aliyah log ----
   const saveAliyah = useCallback(async (row) => {
@@ -139,10 +134,10 @@ export function DataProvider({ children }) {
   }, [reload]);
 
   const value = useMemo(() => ({
-    refs, idx, pm, logMap, loading, error, setError, reload, pendingCount,
+    refs, idx, pm, progressRows: rows, logMap, loading, error, setError, reload, pendingCount,
     toggleItem, setAllItems, saveAliyah, removeAliyah, markAllAliyos,
     saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup,
-  }), [refs, idx, pm, logMap, loading, error, reload, pendingCount, toggleItem, setAllItems, saveAliyah, removeAliyah, markAllAliyos, saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup]);
+  }), [refs, idx, pm, rows, logMap, loading, error, reload, pendingCount, toggleItem, setAllItems, saveAliyah, removeAliyah, markAllAliyos, saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }

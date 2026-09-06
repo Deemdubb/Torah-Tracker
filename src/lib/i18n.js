@@ -17,6 +17,10 @@ export const STRINGS = {
   he: {
     brandMain: 'מעקב תורה', brandSub: 'Torah Progress Tracker',
     tabStudy: 'לימוד', tabAliyos: 'עליות', tabAdmin: 'ניהול', settings: 'הגדרות',
+    tabDashboard: 'סטטיסטיקה', dashboardTitle: 'סטטיסטיקה', dashboardSubtitle: 'מבט על הלימוד והעליות שלך',
+    statLearnedTotal: 'פריטים שנלמדו', statLast7: '7 ימים אחרונים', statLast30: '30 ימים אחרונים', statThisYear: 'השנה', statStreak: 'ימים ברצף', days: 'ימים',
+    progressByCategory: 'התקדמות לפי קטגוריה', recentActivity: 'פעילות אחרונה', noActivity: 'עדיין אין פעילות. סמן משהו בלשונית לימוד.',
+    aliyosStats: 'עליות', statAliyosTotal: 'עליות שנרשמו', statParshiyotCovered: 'פרשות עם עליה', byHonor: 'לפי עליה', byYear: 'לפי שנה', bySynagogue: 'לפי בית כנסת', recentAliyos: 'עליות אחרונות', noDate: 'ללא תאריך',
     studySubtitle: 'בחר קטגוריה למעקב הלימוד שלך', aliyosSubtitle: 'בחר ספר לרישום העליות שלך',
     notFound: 'לא נמצא', notFoundText: 'הדף הזה לא קיים.', goHome: 'לדף הבית',
     markAll: 'סמן הכל', unmarkAll: 'בטל הכל', comingSoon: 'תוכן יתווסף בקרוב',
@@ -72,6 +76,10 @@ export const STRINGS = {
   en: {
     brandMain: 'Torah Progress Tracker', brandSub: 'מעקב תורה',
     tabStudy: 'Study', tabAliyos: 'Aliyos', tabAdmin: 'Admin', settings: 'Settings',
+    tabDashboard: 'Dashboard', dashboardTitle: 'Dashboard', dashboardSubtitle: 'A look at your learning and your aliyos',
+    statLearnedTotal: 'Items learned', statLast7: 'Last 7 days', statLast30: 'Last 30 days', statThisYear: 'This year', statStreak: 'Day streak', days: 'days',
+    progressByCategory: 'Progress by category', recentActivity: 'Recent activity', noActivity: 'Nothing yet. Tick something in the Study tab.',
+    aliyosStats: 'Aliyos', statAliyosTotal: 'Aliyos logged', statParshiyotCovered: 'Parshiyos with an aliyah', byHonor: 'By honor', byYear: 'By year', bySynagogue: 'By synagogue', recentAliyos: 'Recent aliyos', noDate: 'no date',
     studySubtitle: 'Choose a category to track your learning', aliyosSubtitle: 'Choose a sefer to log your aliyos',
     notFound: 'Not found', notFoundText: 'This page does not exist.', goHome: 'Go home',
     markAll: 'Mark all', unmarkAll: 'Unmark all', comingSoon: 'Coming soon',

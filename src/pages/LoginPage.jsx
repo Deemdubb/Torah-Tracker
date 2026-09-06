@@ -3,7 +3,6 @@ import { Navigate } from 'react-router-dom';
 import { LogIn, Mail, UserPlus, Hourglass } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import LanguageToggle from '@/components/LanguageToggle';
 import Spinner from '@/components/Spinner';
 import { Banner, Button, Card, Field, Input } from '@/components/ui';
 
@@ -46,7 +45,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-dvh flex items-center justify-center px-4 py-10" dir={dir}>
       <div className="w-full max-w-md">
-        <div className="flex justify-center mb-6"><LanguageToggle size="lg" /></div>
         <div className="text-center mb-8">
           <img src="./icons/icon-192.png" alt="" className="w-16 h-16 rounded-3xl mx-auto mb-4" />
           <h1 className="text-3xl font-display font-extrabold">{t('brandMain')}</h1>

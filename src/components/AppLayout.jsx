@@ -1,9 +1,8 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { BookOpen, ScrollText, Settings, ShieldCheck, CloudOff } from 'lucide-react';
+import { BookOpen, ScrollText, Settings, ShieldCheck, CloudOff, BarChart3 } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useData } from '@/contexts/DataContext';
-import LanguageToggle from './LanguageToggle';
 import Spinner from './Spinner';
 import { Banner, Button } from './ui';
 
@@ -22,7 +21,7 @@ export default function AppLayout() {
   const { dir, t } = useLang();
   const { isAdmin } = useAuth();
   const { loading, error, setError, reload, pendingCount } = useData();
-  const tab = pathname.startsWith('/aliyos') ? 'aliyos' : pathname.startsWith('/admin') ? 'admin' : pathname.startsWith('/settings') ? 'settings' : 'study';
+  const tab = pathname.startsWith('/aliyos') ? 'aliyos' : pathname.startsWith('/dashboard') ? 'dashboard' : pathname.startsWith('/admin') ? 'admin' : pathname.startsWith('/settings') ? 'settings' : 'study';
 
   return (
     <div className="min-h-dvh bg-background text-foreground" dir={dir}>
@@ -37,7 +36,6 @@ export default function AppLayout() {
               </div>
             </Link>
             <div className="ms-auto flex items-center gap-1.5">
-              <LanguageToggle />
               <Link to="/settings" aria-label={t('settings')} className={`tap p-2 rounded-xl border border-border ${tab === 'settings' ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:text-foreground'}`}>
                 <Settings className="w-4 h-4" />
               </Link>
@@ -46,6 +44,7 @@ export default function AppLayout() {
           <div className="flex gap-1 p-1 rounded-2xl bg-card border border-border">
             <TabButton active={tab === 'study'} to="/study" icon={BookOpen} label={t('tabStudy')} />
             <TabButton active={tab === 'aliyos'} to="/aliyos" icon={ScrollText} label={t('tabAliyos')} />
+            <TabButton active={tab === 'dashboard'} to="/dashboard" icon={BarChart3} label={t('tabDashboard')} />
             {isAdmin && <TabButton active={tab === 'admin'} to="/admin" icon={ShieldCheck} label={t('tabAdmin')} />}
           </div>
         </div>
