@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { Download, Upload, LogOut, Smartphone, KeyRound } from 'lucide-react';
+import { Download, Upload, LogOut, Smartphone, KeyRound, Activity, Copy } from 'lucide-react';
+import { db } from '@/lib/db';
 import { useLang } from '@/lib/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useData } from '@/contexts/DataContext';
@@ -19,6 +20,8 @@ export default function SettingsPage() {
   const [pw2, setPw2] = useState('');
   const [pwMsg, setPwMsg] = useState('');
   const [pwBusy, setPwBusy] = useState(false);
+  const [diag, setDiag] = useState(null);
+  const [diagBusy, setDiagBusy] = useState(false);
   const { idx, progressRows, logMap, exportBackup, importBackup, setError } = useData();
   const fileRef = useRef(null);
   const [msg, setMsg] = useState('');
@@ -97,6 +100,18 @@ export default function SettingsPage() {
         <p className="text-sm text-muted-foreground">{t('installText')}</p>
       </Card>
 
+      <Card className="p-4 space-y-3">
+        <div className="font-semibold flex items-center gap-2"><Activity className="w-4 h-4" />{t('connectionCheck')}</div>
+        <p className="text-xs text-muted-foreground">{t('connectionHint')}</p>
+        <Button variant="outline" disabled={diagBusy} onClick={async () => { setDiagBusy(true); try { setDiag(await db.diagnose()); } finally { setDiagBusy(false); } }}>{diagBusy ? t('loading') : t('runCheck')}</Button>
+        {diag && (
+          <div className="space-y-1 text-sm">
+            {diag.map((d) => <div key={d.name} className="flex items-center gap-2"><span className={d.ok ? 'text-primary' : 'text-destructive'}>{d.ok ? '✓' : '✗'}</span><span className="w-20 shrink-0">{d.name}</span><span className="text-muted-foreground truncate" dir="ltr">{d.info} · {d.ms} ms</span></div>)}
+            <Button size="sm" variant="ghost" onClick={() => { const report = [`app ${__APP_VERSION__}`, `mode ${isLocalMode ? 'local' : 'cloud'}`, navigator.userAgent, `online ${navigator.onLine} standalone ${window.matchMedia('(display-mode: standalone)').matches}`, ...diag.map((d) => `${d.ok ? 'OK ' : 'FAIL'} ${d.name}: ${d.info} (${d.ms} ms)`)].join('\n'); navigator.clipboard?.writeText(report).then(() => setMsg(t('copied'))).catch(() => setMsg(report)); }}><Copy className="w-4 h-4" />{t('copyReport')}</Button>
+          </div>
+        )}
+      </Card>
+
       {!isLocalMode && (
         <Card className="p-4 space-y-3">
           <div className="font-semibold">{t('account')}</div>
@@ -119,6 +134,7 @@ export default function SettingsPage() {
           <Button variant="destructive" onClick={signOut}><LogOut className="w-4 h-4" />{t('signOut')}</Button>
         </Card>
       )}
+      <p className="text-center text-[11px] text-muted-foreground pt-2" dir="ltr">{t('version')} {__APP_VERSION__}</p>
     </div>
   );
 }

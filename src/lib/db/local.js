@@ -119,5 +119,6 @@ export function createLocalBackend() {
     sheetLink: null, // live Google Sheet links need cloud mode
     pendingCount: () => 0,
     async flush() {},
+    async diagnose() { return [{ name: 'storage', ok: true, ms: 0, info: 'local mode' }]; },
   };
 }

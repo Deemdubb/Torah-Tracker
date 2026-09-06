@@ -34,6 +34,7 @@ export const STRINGS = {
     cancel: 'ביטול', close: 'סגור', save: 'שמור', saving: 'שומר…', loading: 'טוען…', back: 'חזרה',
     add: 'הוסף', edit: 'ערוך', delete: 'מחק', moveUp: 'העלה', moveDown: 'הורד', yes: 'כן', no: 'לא',
     error: 'משהו השתבש', retry: 'נסה שוב', done: 'בוצע',
+    connectionCheck: 'בדיקת חיבור', connectionHint: 'אם משהו לא נטען, הרץ את הבדיקה ושלח את התוצאה.', runCheck: 'הרץ בדיקה', copyReport: 'העתק דוח', version: 'גרסה',
     areYouSure: 'האם אתה בטוח?', dbNeedsUpdate: 'מסד הנתונים עדיין עם החוקים הישנים. הרץ ב-Supabase (SQL Editor) את קובץ העדכון supabase/migrations/2026-09-06_repeats_and_connected_parshiyos.sql ואז טען מחדש.',
     // login
     welcome: 'ברוך הבא', loginSubtitle: 'הכנס את האימייל שלך ונשלח לך קישור כניסה',
@@ -101,6 +102,7 @@ export const STRINGS = {
     cancel: 'Cancel', close: 'Close', save: 'Save', saving: 'Saving…', loading: 'Loading…', back: 'Back',
     add: 'Add', edit: 'Edit', delete: 'Delete', moveUp: 'Move up', moveDown: 'Move down', yes: 'Yes', no: 'No',
     error: 'Something went wrong', retry: 'Try again', done: 'Done',
+    connectionCheck: 'Connection check', connectionHint: 'If something does not load, run this and send the result.', runCheck: 'Run check', copyReport: 'Copy report', version: 'Version',
     areYouSure: 'Are you sure?', dbNeedsUpdate: 'Your database still has the old rules. In Supabase (SQL Editor) run the update file supabase/migrations/2026-09-06_repeats_and_connected_parshiyos.sql, then reload.',
     welcome: 'Welcome', loginSubtitle: 'Enter your email and we will send you a sign-in link',
     email: 'Email', sendLink: 'Send sign-in link', linkSent: 'Link sent. Check your email.',

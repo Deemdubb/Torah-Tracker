@@ -2,11 +2,16 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { fileURLToPath, URL } from 'node:url';
+import { execSync } from 'node:child_process';
+
+const gitHash = (() => { try { return execSync('git rev-parse --short HEAD').toString().trim(); } catch { return 'dev'; } })();
+const buildStamp = `${new Date().toISOString().slice(0, 16).replace('T', ' ')} · ${gitHash}`;
 
 // VITE_BASE_PATH lets GitHub Pages serve from /repo-name/. Default is "/".
 // loadEnv reads it from .env as well as from the shell (the shell value wins, which is what the GitHub workflow uses).
 export default defineConfig(({ mode }) => ({
   base: loadEnv(mode, process.cwd()).VITE_BASE_PATH || '/',
+  define: { __APP_VERSION__: JSON.stringify(buildStamp) },
   plugins: [
     react(),
     VitePWA({

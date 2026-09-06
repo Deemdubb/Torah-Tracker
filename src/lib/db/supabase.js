@@ -17,15 +17,15 @@ const REQUEST_TIMEOUT_MS = 20000;
 const fetchWithTimeout = (input, init = {}) => {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS);
-  const signal = init.signal ? AbortSignal.any([init.signal, ctrl.signal]) : ctrl.signal;
-  return fetch(input, { ...init, signal }).finally(() => clearTimeout(timer));
+  if (init.signal) { if (init.signal.aborted) ctrl.abort(); else init.signal.addEventListener('abort', () => ctrl.abort(), { once: true }); }
+  return fetch(input, { ...init, signal: ctrl.signal }).finally(() => clearTimeout(timer));
 };
 
 export function createSupabaseBackend(url, key) {
   const sb = createClient(url, key, {
     // The library's default "navigator lock" is known to stall in Safari on iPhone. One app tab at a time is fine for us.
     auth: { lock: (_name, _timeout, fn) => fn(), persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
-    global: { fetch: typeof AbortSignal !== 'undefined' && AbortSignal.any ? fetchWithTimeout : undefined },
+    global: { fetch: fetchWithTimeout },
   });
   const redirectTo = () => window.location.origin + window.location.pathname;
 
@@ -186,5 +186,16 @@ export function createSupabaseBackend(url, key) {
     },
     pendingCount: () => readQueue().length,
     flush,
+    // Runs a few small requests and reports what works. Shown in Settings -> Connection check.
+    async diagnose() {
+      const steps = [];
+      const step = async (name, fn) => { const t0 = performance.now(); try { const info = await fn(); steps.push({ name, ok: true, ms: Math.round(performance.now() - t0), info }); } catch (e) { steps.push({ name, ok: false, ms: Math.round(performance.now() - t0), info: e?.message || String(e) }); } };
+      await step('auth', async () => { const r = await fetchWithTimeout(`${url}/auth/v1/health`, { headers: { apikey: key } }); return `HTTP ${r.status}`; });
+      await step('session', async () => { const { data } = await sb.auth.getSession(); return data?.session ? `user ${data.session.user.email}` : 'no session'; });
+      await step('lists', async () => { const { data, error } = await sb.from('categories').select('key').limit(3); if (error) throw error; return `${data.length} rows`; });
+      await step('progress', async () => { const { data, error } = await sb.from('study_progress').select('id').limit(1); if (error) throw error; return `${data.length} rows`; });
+      await step('function', async () => { const r = await fetchWithTimeout(`${url}/functions/v1/sheet-export`); return `HTTP ${r.status}`; });
+      return steps;
+    },
   };
 }
