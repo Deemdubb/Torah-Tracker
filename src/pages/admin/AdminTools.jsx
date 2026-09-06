@@ -4,14 +4,16 @@ import { useLang } from '@/lib/LanguageContext';
 import { useData } from '@/contexts/DataContext';
 import { downloadText, readFileAsText } from '@/lib/csv';
 import { AdminCrumbs } from './adminShared';
+import { useConfirm } from '@/components/ConfirmDialog';
 import { Banner, Button, Card } from '@/components/ui';
 
 export default function AdminTools() {
   const { t } = useLang();
   const { refs, idx, resetDefaults, importRefs, setError } = useData();
   const fileRef = useRef(null);
+  const confirm = useConfirm();
   const [msg, setMsg] = useState('');
-  const guard = (fn) => async (...a) => { try { await fn(...a); } catch (e) { setError(e.message || String(e)); } };
+  const guard = (fn) => async (...a) => { try { await fn(...a); } catch (e) { setError(e); } };
 
   const exportLists = () => downloadText(`torah-lists-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(refs, null, 2), 'application/json');
   const importLists = guard(async (e) => {
@@ -40,7 +42,7 @@ export default function AdminTools() {
           <Button variant="outline" className="flex-1" onClick={() => fileRef.current?.click()}><Upload className="w-4 h-4" />{t('importLists')}</Button>
           <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={importLists} />
         </div>
-        <Button variant="destructive" className="w-full" onClick={() => { if (window.confirm(t('resetConfirm'))) guard(resetDefaults)().then(() => setMsg(t('done'))); }}><RotateCcw className="w-4 h-4" />{t('resetDefaults')}</Button>
+        <Button variant="destructive" className="w-full" onClick={async () => { if (await confirm({ title: t('resetDefaults'), text: t('resetConfirm'), okLabel: t('resetDefaults'), danger: true })) guard(resetDefaults)().then(() => setMsg(t('done'))); }}><RotateCcw className="w-4 h-4" />{t('resetDefaults')}</Button>
       </Card>
     </div>
   );

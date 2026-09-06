@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useData } from '@/contexts/DataContext';
 import RowActions from './RowActions';
+import { useConfirm } from '@/components/ConfirmDialog';
 import { Name } from '@/components/ui';
 
 export const nextOrder = (list) => list.reduce((m, x) => Math.max(m, Number(x.sort_order) || 0), 0) + 1;
@@ -11,8 +12,9 @@ export const nextOrder = (list) => list.reduce((m, x) => Math.max(m, Number(x.so
 export function AdminRow({ row, table, to, subtitle, onEdit, index, count, badge }) {
   const { name, t, dir } = useLang();
   const { reorder, removeRef, setError } = useData();
+  const confirm = useConfirm();
   const Chevron = dir === 'rtl' ? ChevronLeft : ChevronRight;
-  const guard = (fn) => () => fn().catch((e) => setError(e.message || String(e)));
+  const guard = (fn) => () => fn().catch((e) => setError(e));
   const inner = (
     <>
       <div className="flex-1 min-w-0 text-start">
@@ -29,7 +31,7 @@ export function AdminRow({ row, table, to, subtitle, onEdit, index, count, badge
         canUp={index > 0} canDown={index < count - 1}
         onUp={guard(() => reorder(table, row, -1))} onDown={guard(() => reorder(table, row, 1))}
         onEdit={onEdit}
-        onDelete={() => { if (window.confirm(t('deleteConfirm'))) guard(() => removeRef(table, row.key))(); }}
+        onDelete={async () => { if (await confirm({ title: t('delete'), text: t('deleteConfirm'), okLabel: t('delete'), danger: true })) guard(() => removeRef(table, row.key))(); }}
       />
     </div>
   );

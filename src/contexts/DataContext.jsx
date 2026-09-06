@@ -15,7 +15,13 @@ export function DataProvider({ children }) {
   const pm = useMemo(() => progressMapFrom(rows), [rows]);
   const [logMap, setLogMap] = useState(() => new Map());
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setErrorState] = useState(null);
+  // Turns raw database errors into something a person can act on.
+  const setError = useCallback((e) => {
+    if (e == null) return setErrorState(null);
+    const msg = typeof e === 'string' ? e : (e.message || String(e));
+    setErrorState(/duplicate key|violates unique|does not exist|schema cache/i.test(msg) ? 'db-needs-update' : msg);
+  }, []);
   const [pendingCount, setPendingCount] = useState(0);
 
   const reload = useCallback(async () => {
@@ -25,9 +31,9 @@ export function DataProvider({ children }) {
       if ((!r.categories || r.categories.length === 0) && isAdmin) r = await db.refs.seedDefaults();
       const [progress, log] = await Promise.all([db.progress.load(), db.aliyahLog.load()]);
       setRefs(r); setRows(progress || []); setLogMap(logMapFrom(log));
-    } catch (e) { console.error(e); setError(e.message || String(e)); }
+    } catch (e) { console.error(e); setError(e); }
     finally { setLoading(false); }
-  }, [isAdmin]);
+  }, [isAdmin, setError]);
 
   useEffect(() => { if (user) reload(); }, [user, reload]);
   useEffect(() => {
@@ -44,32 +50,33 @@ export function DataProvider({ children }) {
   const rowKey = (r) => `${r.book_key}|${r.parashah_key || ''}|${r.item}`;
   const inScope = (scope) => (r) => r.book_key === scope.book_key && (r.parashah_key || '') === (scope.parashah_key || '');
   const newRow = (scope, item) => ({ book_key: scope.book_key, parashah_key: scope.parashah_key || '', item: String(item), completed_at: new Date().toISOString() });
-  const commit = useCallback(async (next, work) => {
-    setRows((prev) => { commit.prev = prev; return next; });
-    try { await work(); } catch (e) { console.error(e); setError(e.message || String(e)); setRows(commit.prev); }
-  }, []);
+  // Shows the change right away, saves it, and puts the old rows back if saving fails.
+  const commit = useCallback(async (prev, next, work) => {
+    setRows(next);
+    try { await work(); } catch (e) { console.error(e); setError(e); setRows(prev); }
+  }, [setError]);
 
   // +1 on one item
-  const addOne = useCallback((scope, item) => commit([...rows, newRow(scope, item)], () => db.progress.add([{ ...scope, item: String(item) }])), [rows, commit]);
+  const addOne = useCallback((scope, item) => commit(rows, [...rows, newRow(scope, item)], () => db.progress.add([{ ...scope, item: String(item) }])), [rows, commit]);
   // -1 on one item (removes its most recent completion)
   const removeOne = useCallback((scope, item) => {
     const key = rowKey({ ...scope, item: String(item) });
     let best = -1;
     rows.forEach((r, i) => { if (rowKey(r) === key && (best < 0 || String(r.completed_at) >= String(rows[best].completed_at))) best = i; });
     if (best < 0) return Promise.resolve();
-    return commit(rows.filter((_, i) => i !== best), () => db.progress.removeOne({ ...scope, item: String(item) }));
+    return commit(rows, rows.filter((_, i) => i !== best), () => db.progress.removeOne({ ...scope, item: String(item) }));
   }, [rows, commit]);
   // every item that was never learned gets its first completion
   const fillAll = useCallback((scope, items) => {
     const have = new Set(rows.filter(inScope(scope)).map((r) => String(r.item)));
     const missing = items.filter((i) => !have.has(String(i)));
     if (!missing.length) return Promise.resolve();
-    return commit([...rows, ...missing.map((i) => newRow(scope, i))], () => db.progress.add(missing.map((i) => ({ ...scope, item: String(i) }))));
+    return commit(rows, [...rows, ...missing.map((i) => newRow(scope, i))], () => db.progress.add(missing.map((i) => ({ ...scope, item: String(i) }))));
   }, [rows, commit]);
   // +1 on every item (learned the whole sefer again)
-  const againAll = useCallback((scope, items) => commit([...rows, ...items.map((i) => newRow(scope, i))], () => db.progress.add(items.map((i) => ({ ...scope, item: String(i) })))), [rows, commit]);
+  const againAll = useCallback((scope, items) => commit(rows, [...rows, ...items.map((i) => newRow(scope, i))], () => db.progress.add(items.map((i) => ({ ...scope, item: String(i) })))), [rows, commit]);
   // removes every completion in this sefer / parashah
-  const clearAll = useCallback((scope) => commit(rows.filter((r) => !inScope(scope)(r)), () => db.progress.remove({ ...scope })), [rows, commit]);
+  const clearAll = useCallback((scope) => commit(rows, rows.filter((r) => !inScope(scope)(r)), () => db.progress.remove({ ...scope })), [rows, commit]);
 
   // ---- aliyah log (several entries per honor) ----
   const sortEntries = (list) => list.sort((a, b) => String(b.date || b.created_at || '').localeCompare(String(a.date || a.created_at || '')));
@@ -152,7 +159,7 @@ export function DataProvider({ children }) {
     refs, idx, pm, progressRows: rows, logMap, loading, error, setError, reload, pendingCount,
     addOne, removeOne, fillAll, againAll, clearAll, saveAliyah, removeAliyah, markAllAliyos,
     saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup,
-  }), [refs, idx, pm, rows, logMap, loading, error, reload, pendingCount, addOne, removeOne, fillAll, againAll, clearAll, saveAliyah, removeAliyah, markAllAliyos, saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup]);
+  }), [refs, idx, pm, rows, logMap, loading, error, setError, reload, pendingCount, addOne, removeOne, fillAll, againAll, clearAll, saveAliyah, removeAliyah, markAllAliyos, saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }

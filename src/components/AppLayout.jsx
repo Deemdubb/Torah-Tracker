@@ -54,7 +54,7 @@ export default function AppLayout() {
           <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground"><CloudOff className="w-3.5 h-3.5" />{pendingCount} {t('pendingSync')}</div>
         )}
         {error && (
-          <div className="mb-3"><Banner tone="error"><div className="flex items-center gap-2 flex-wrap"><span className="flex-1">{t('error')}: {error}</span><Button size="sm" variant="outline" onClick={() => { setError(null); reload(); }}>{t('retry')}</Button></div></Banner></div>
+          <div className="mb-3"><Banner tone="error"><div className="flex items-center gap-2 flex-wrap"><span className="flex-1">{error === 'db-needs-update' ? t('dbNeedsUpdate') : `${t('error')}: ${error}`}</span><Button size="sm" variant="outline" onClick={() => { setError(null); reload(); }}>{t('retry')}</Button></div></Banner></div>
         )}
         {loading ? <Spinner /> : <Outlet />}
       </main>

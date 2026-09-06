@@ -52,7 +52,7 @@ export default function SettingsPage() {
   const restore = async (e) => {
     const file = e.target.files?.[0]; if (!file) return;
     try { const data = JSON.parse(await readFileAsText(file)); await importBackup(data, { includeLists: false }); setMsg(t('restoreDone')); }
-    catch (err) { setError(err.message || String(err)); }
+    catch (err) { setError(err); }
     finally { e.target.value = ''; }
   };
 

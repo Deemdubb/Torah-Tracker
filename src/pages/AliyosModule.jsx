@@ -5,6 +5,7 @@ import { useLang } from '@/lib/LanguageContext';
 import { useData } from '@/contexts/DataContext';
 import { logKey, resolveAliyosPath } from '@/lib/model';
 import { haptic } from '@/lib/haptics';
+import { useConfirm } from '@/components/ConfirmDialog';
 import Breadcrumb from '@/components/Breadcrumb';
 import ProgressPill from '@/components/ProgressPill';
 import CircularCheckbox from '@/components/CircularCheckbox';
@@ -21,6 +22,7 @@ function CombinedTag({ partner }) {
 // The honor's dialog: a list of every time it was received, plus a form to add or edit one.
 function AliyahModal({ open, book, parashah, partner, aliyah, entries, onClose, onSave, onRemove }) {
   const { t, name } = useLang();
+  const confirm = useConfirm();
   const [mode, setMode] = useState('list'); // 'list' | 'form'
   const [editing, setEditing] = useState(null);
   const [date, setDate] = useState('');
@@ -43,7 +45,7 @@ function AliyahModal({ open, book, parashah, partner, aliyah, entries, onClose, 
     haptic('success');
     if (entries.length === 0 && !editing) onClose(); else setMode('list');
   });
-  const remove = (entry) => { if (!window.confirm(t('deleteConfirm'))) return; run(async () => { await onRemove(entry); haptic('remove'); if (entries.length <= 1) onClose(); }); };
+  const remove = async (entry) => { if (!(await confirm({ title: t('delete'), text: t('deleteConfirm'), okLabel: t('delete'), danger: true }))) return; run(async () => { await onRemove(entry); haptic('remove'); if (entries.length <= 1) onClose(); }); };
 
   const title = <Name>{aliyah ? name(aliyah) : ''}</Name>;
   const subtitle = <><Name>{name(book)}</Name> · <Name>{name(parashah)}</Name></>;
@@ -119,7 +121,7 @@ export default function AliyosModule() {
   const entriesFor = (a) => logMap.get(logKey(book.key, parashah.key, a.key)) || [];
   const received = view.aliyot.filter((a) => entriesFor(a).length > 0).length;
   const total = view.aliyot.length;
-  const guard = (fn) => async (...args) => { try { return await fn(...args); } catch (e) { console.error(e); setError(e.message || String(e)); throw e; } };
+  const guard = (fn) => async (...args) => { try { return await fn(...args); } catch (e) { console.error(e); setError(e); throw e; } };
 
   return (
     <div className="pt-1">

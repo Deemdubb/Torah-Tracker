@@ -5,6 +5,7 @@ import { useLang } from '@/lib/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/db';
 import { Banner, Button, Card } from './ui';
+import { useConfirm } from './ConfirmDialog';
 
 const newToken = () => Array.from(crypto.getRandomValues(new Uint8Array(24))).map((b) => b.toString(16).padStart(2, '0')).join('');
 
@@ -31,6 +32,7 @@ function FormulaRow({ label, formula }) {
 export default function SheetLinkCard() {
   const { t } = useLang();
   const { isLocalMode } = useAuth();
+  const confirm = useConfirm();
   const [token, setToken] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -41,7 +43,7 @@ export default function SheetLinkCard() {
   }, [isLocalMode]);
 
   const make = async () => {
-    if (token && !window.confirm(t('sheetRegenerateConfirm'))) return;
+    if (token && !(await confirm({ title: t('sheetRegenerate'), text: t('sheetRegenerateConfirm'), okLabel: t('sheetRegenerate'), danger: true }))) return;
     setBusy(true); setError('');
     try { setToken(await db.sheetLink.set(newToken())); } catch (e) { setError(e.message || String(e)); } finally { setBusy(false); }
   };

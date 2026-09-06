@@ -5,6 +5,7 @@ import { useLang } from '@/lib/LanguageContext';
 import { useData } from '@/contexts/DataContext';
 import { resolveStudyPath, countOf } from '@/lib/model';
 import { haptic } from '@/lib/haptics';
+import { useConfirm } from '@/components/ConfirmDialog';
 import Breadcrumb from '@/components/Breadcrumb';
 import ProgressPill from '@/components/ProgressPill';
 import CircularCheckbox from '@/components/CircularCheckbox';
@@ -35,6 +36,7 @@ export default function StudyModule() {
   const { '*': splat } = useParams();
   const { t, name, leafLabel, rangeLabel } = useLang();
   const { idx, pm, addOne, removeOne, fillAll, againAll, clearAll } = useData();
+  const confirm = useConfirm();
   const parts = useMemo(() => splitParts(splat), [splat]);
   const view = useMemo(() => resolveStudyPath(parts, idx, pm), [parts, idx, pm]);
 
@@ -82,8 +84,8 @@ export default function StudyModule() {
   const add = (v) => { haptic('tap'); addOne(view.scope, v); };
   const remove = (v) => { haptic('remove'); removeOne(view.scope, v); };
   const markAll = () => { haptic('success'); fillAll(view.scope, values); };
-  const learnAgain = () => { if (window.confirm(t('confirmLearnAgain'))) { haptic('success'); againAll(view.scope, values); } };
-  const clear = () => { if (window.confirm(t('confirmClearAll'))) { haptic('remove'); clearAll(view.scope); } };
+  const learnAgain = async () => { if (await confirm({ title: t('learnAgain'), text: t('confirmLearnAgain'), okLabel: t('learnAgain') })) { haptic('success'); againAll(view.scope, values); } };
+  const clear = async () => { if (await confirm({ title: t('clearAll'), text: t('confirmClearAll'), okLabel: t('clearAll'), danger: true })) { haptic('remove'); clearAll(view.scope); } };
 
   return (
     <div className="pt-1">

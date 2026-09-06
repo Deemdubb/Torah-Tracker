@@ -2,6 +2,7 @@ import { HashRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from '@/lib/LanguageContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { DataProvider } from '@/contexts/DataContext';
+import { ConfirmProvider } from '@/components/ConfirmDialog';
 import AppLayout from '@/components/AppLayout';
 import Spinner from '@/components/Spinner';
 import StudyModule from '@/pages/StudyModule';
@@ -32,6 +33,7 @@ function RequireAdmin() {
 export default function App() {
   return (
     <LanguageProvider>
+      <ConfirmProvider>
       <AuthProvider>
         <HashRouter>
           <Routes>
@@ -52,6 +54,7 @@ export default function App() {
           </Routes>
         </HashRouter>
       </AuthProvider>
+      </ConfirmProvider>
     </LanguageProvider>
   );
 }
