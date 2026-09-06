@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Flame, BookOpen, ScrollText, CalendarDays } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useData } from '@/contexts/DataContext';
-import { categoryTotals, studyPath } from '@/lib/model';
+import { categoryTotals, studyPath, allEntries } from '@/lib/model';
 import ProgressRing from '@/components/ProgressRing';
 import { Card, Name } from '@/components/ui';
 
@@ -50,11 +50,12 @@ export default function DashboardPage() {
     while (days.has(dayKey(cursor))) { streak++; cursor = new Date(cursor - DAY); }
     const recent = dated.filter((r) => r.d).sort((a, b) => b.d - a.d).slice(0, 8);
     const cats = idx.categories.map((c) => ({ c, ...categoryTotals(idx, c, pm) })).filter((x) => x.total > 0);
-    return { total: progressRows.length, last7: within(7), last30: within(30), thisYear: dated.filter((r) => r.d && r.d.getFullYear() === now.getFullYear()).length, streak, recent, cats };
+    const unique = new Set(progressRows.map((r) => `${r.book_key}|${r.parashah_key || ''}|${r.item}`)).size;
+    return { total: unique, completions: progressRows.length, last7: within(7), last30: within(30), thisYear: dated.filter((r) => r.d && r.d.getFullYear() === now.getFullYear()).length, streak, recent, cats };
   }, [progressRows, idx, pm]);
 
   const aliyos = useMemo(() => {
-    const entries = [...logMap.values()];
+    const entries = allEntries(logMap);
     const count = (fn) => { const m = new Map(); for (const e of entries) { const k = fn(e); if (k == null || k === '') continue; m.set(k, (m.get(k) || 0) + 1); } return m; };
     const byHonor = idx.aliyot.map((a) => ({ key: a.key, label: name(a), n: entries.filter((e) => e.aliyah_key === a.key).length }));
     const byYear = [...count((e) => (e.date ? String(e.date).slice(0, 4) : null))].sort((a, b) => b[0].localeCompare(a[0])).map(([k, n]) => ({ key: k, label: k, n }));
@@ -76,8 +77,9 @@ export default function DashboardPage() {
         <p className="text-sm text-muted-foreground">{t('dashboardSubtitle')}</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         <Stat label={t('statLearnedTotal')} value={study.total} icon={BookOpen} />
+        <Stat label={t('statCompletions')} value={study.completions} />
         <Stat label={t('statLast7')} value={study.last7} icon={CalendarDays} />
         <Stat label={t('statLast30')} value={study.last30} icon={CalendarDays} />
         <Stat label={t('statStreak')} value={study.streak} icon={Flame} />
@@ -103,7 +105,7 @@ export default function DashboardPage() {
         {study.recent.length === 0 ? <p className="text-sm text-muted-foreground">{t('noActivity')}</p> : (
           <ul className="divide-y divide-border">
             {study.recent.map((r) => { const d = describe(r); return (
-              <li key={`${r.book_key}|${r.parashah_key}|${r.item}`} className="py-2 flex items-center gap-3 text-sm">
+              <li key={`${r.book_key}|${r.parashah_key}|${r.item}|${r.completed_at}`} className="py-2 flex items-center gap-3 text-sm">
                 <div className="flex-1 min-w-0"><span className="font-medium"><Name>{d.book}</Name></span> <span className="text-muted-foreground"><Name>{d.detail}</Name></span></div>
                 <div className="text-xs text-muted-foreground tabular-nums shrink-0">{r.completed_at.slice(0, 10)}</div>
               </li>); })}

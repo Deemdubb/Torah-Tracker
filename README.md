@@ -59,6 +59,14 @@ Only admins see the **Admin** tab. In local mode you are always the admin. In cl
 
 Changes are visible to all users right away.
 
+## Learning something more than once
+
+Every tap on a perek, a daf, or an aliyah adds one completion. The circle shows a check the first time and a number from the second time on. The small minus next to it takes one away. A sefer shows "×2" once every item in it was learned twice. At the top of a sefer, "Mark all" fills in everything not yet learned; once everything is learned once, it becomes "Learned again (+1 all)" and "Clear all".
+
+An aliyah can be received more than once. Tap the honor to see every entry, edit one, delete one, or "Add another". For the seven double parshiyos (Vayakhel-Pekudei and the others) each entry has a "This week was combined with …" choice, because the reading is different in those years. Admins connect or disconnect parshiyos in Admin → sefer → parashah → "Connected with".
+
+**Already set up Supabase before 2026-09-06?** Run `supabase/migrations/2026-09-06_repeats_and_connected_parshiyos.sql` once in the SQL Editor. It removes the old one-per-item rule and adds the new columns. New installs get all of this from `schema.sql` directly.
+
 ## Set up cloud mode (Supabase)
 
 1. Go to https://supabase.com, create a free account and a new project. Pick a strong database password and save it somewhere.
@@ -119,7 +127,7 @@ The formulas call a small piece of server code that runs on Supabase for free. I
 3. Open the function's page → **Details / Settings** and turn **off** "Enforce JWT verification" (Google Sheets cannot send a login header; the secret link is the protection instead).
 4. Make sure `supabase/schema.sql` has been run; it creates the `sheet_links` table the function reads.
 
-Tab three, "By parashah", is one row per parashah with the aliyos learned and the aliyos received, which is the "page per Torah portion" view.
+Tab three, "By parashah", is one row per parashah with the aliyos learned and the aliyos received, which is the "page per Torah portion" view. Tab four, "Sefarim summary", is one row per sefer with how much was learned and how many times in full.
 
 **3. Owner's power-user sync (optional).** `tools/google-sheets-sync.gs` is a Google Apps Script that copies everyone's data into one spreadsheet every hour using the Supabase service key. Setup steps are at the top of that file. Only for the owner.
 

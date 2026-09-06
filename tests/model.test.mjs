@@ -4,9 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  buildIndex, bookItems, bookTotals, sectionTotals, categoryTotals,
-  resolveStudyPath, resolveAliyosPath, progressMapFrom, logMapFrom,
-  siblingsOf, scopeKey, logKey, studyPath, aliyosPath,
+  buildIndex, bookItems, bookTotals, sectionTotals, categoryTotals, resolveStudyPath, resolveAliyosPath, progressMapFrom, logMapFrom, siblingsOf, scopeKey, logKey, studyPath, aliyosPath,
 } from '../src/lib/model.js';
 
 const refs = JSON.parse(readFileSync(new URL('../src/data/referenceData.json', import.meta.url), 'utf8'));
@@ -84,25 +82,25 @@ test('every Gemara book in the reference data starts at daf 2', () => {
 // ---------- bookTotals ----------
 test('bookTotals in items mode counts only items inside the current range', () => {
   const b = book('tanach-yehoshua');
-  assert.deepEqual(bookTotals(idx, b, emptyPm), { total: 24, completed: 0 });
+  assert.deepEqual(bookTotals(idx, b, emptyPm), { total: 24, completed: 0, cycles: 0 });
   const pm = pmOf([
     { book_key: b.key, parashah_key: '', item: '1' },
     { book_key: b.key, parashah_key: null, item: 2 },
     { book_key: b.key, parashah_key: '', item: '99' }, // left over from an old, larger count
     { book_key: 'tanach-shoftim', parashah_key: '', item: '1' }, // other book
   ]);
-  assert.deepEqual(bookTotals(idx, b, pm), { total: 24, completed: 2 });
+  assert.deepEqual(bookTotals(idx, b, pm), { total: 24, completed: 2, cycles: 0 });
 });
 
 test('bookTotals for a daf book ignores daf 1 (not part of the book)', () => {
   const b = book('gemara-brachos');
   const pm = pmOf([{ book_key: b.key, parashah_key: '', item: '1' }, { book_key: b.key, parashah_key: '', item: '2' }]);
-  assert.deepEqual(bookTotals(idx, b, pm), { total: 63, completed: 1 });
+  assert.deepEqual(bookTotals(idx, b, pm), { total: 63, completed: 1, cycles: 0 });
 });
 
 test('bookTotals in parshiyot mode is parshiyot x study aliyot and ignores maftir', () => {
   const b = book('tanach-bereishis');
-  assert.deepEqual(bookTotals(idx, b, emptyPm), { total: 84, completed: 0 });
+  assert.deepEqual(bookTotals(idx, b, emptyPm), { total: 84, completed: 0, cycles: 0 });
   const pm = pmOf([
     { book_key: b.key, parashah_key: 'noach', item: 'kohen' },
     { book_key: b.key, parashah_key: 'noach', item: 'levi' },
@@ -110,7 +108,7 @@ test('bookTotals in parshiyot mode is parshiyot x study aliyot and ignores mafti
     { book_key: b.key, parashah_key: 'bereishis', item: 'shvii' },
     { book_key: b.key, parashah_key: 'gone', item: 'kohen' }, // parashah that no longer exists
   ]);
-  assert.deepEqual(bookTotals(idx, b, pm), { total: 84, completed: 3 });
+  assert.deepEqual(bookTotals(idx, b, pm), { total: 84, completed: 3, cycles: 0 });
 });
 
 test('bookTotals never reports more completed than total', () => {
@@ -342,26 +340,37 @@ test('resolveAliyosPath: invalid paths return null', () => {
 });
 
 // ---------- maps ----------
-test('progressMapFrom groups rows by book|parashah and stringifies items', () => {
+test('progressMapFrom groups rows by book|parashah and counts repeats', () => {
   const pm = progressMapFrom([
     { book_key: 'b', parashah_key: '', item: 1 },
     { book_key: 'b', parashah_key: null, item: '2' },
     { book_key: 'b', item: 3 },
     { book_key: 'b', parashah_key: 'p', item: 'kohen' },
-    { book_key: 'b', parashah_key: 'p', item: 'kohen' }, // duplicate
+    { book_key: 'b', parashah_key: 'p', item: 'kohen' }, // learned twice
   ]);
   assert.equal(pm.size, 2);
-  assert.deepEqual([...pm.get('b|')].sort(), ['1', '2', '3']);
-  assert.deepEqual([...pm.get('b|p')], ['kohen']);
+  assert.deepEqual([...pm.get('b|').keys()].sort(), ['1', '2', '3']);
+  assert.equal(pm.get('b|').get('1'), 1);
+  assert.equal(pm.get('b|p').get('kohen'), 2);
   assert.equal(progressMapFrom(null).size, 0);
   assert.equal(progressMapFrom(undefined).size, 0);
 });
 
-test('logMapFrom keys rows by book|parashah|aliyah and keeps the row', () => {
-  const row = { id: 'x', book_key: 'b', parashah_key: 'p', aliyah_key: 'a', synagogue: 'Shul' };
-  const m = logMapFrom([row]);
+test('bookTotals: learned-once progress plus full cycles', () => {
+  const book = idx.book['gemara-brachos']; // dapim 2..64 = 63 items
+  const once = bookItems(book).map((n) => ({ book_key: book.key, parashah_key: '', item: n }));
+  assert.deepEqual(bookTotals(idx, book, pmOf(once)), { total: 63, completed: 63, cycles: 1 });
+  assert.deepEqual(bookTotals(idx, book, pmOf([...once, ...once])), { total: 63, completed: 63, cycles: 2 });
+  assert.deepEqual(bookTotals(idx, book, pmOf([...once, ...once.slice(0, 10)])), { total: 63, completed: 63, cycles: 1 });
+  assert.deepEqual(bookTotals(idx, book, pmOf(once.slice(1))), { total: 63, completed: 62, cycles: 0 });
+});
+
+test('logMapFrom keys rows by book|parashah|aliyah and keeps every entry, newest first', () => {
+  const a = { id: 'x', book_key: 'b', parashah_key: 'p', aliyah_key: 'a', date: '2024-01-01' };
+  const b = { id: 'y', book_key: 'b', parashah_key: 'p', aliyah_key: 'a', date: '2026-01-01', combined: true };
+  const m = logMapFrom([a, b]);
   assert.equal(m.size, 1);
-  assert.equal(m.get('b|p|a'), row);
+  assert.deepEqual(m.get('b|p|a').map((r) => r.id), ['y', 'x']);
   assert.equal(logMapFrom(null).size, 0);
 });
 

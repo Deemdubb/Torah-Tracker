@@ -18,6 +18,12 @@ function loadRefs() {
   let r = read(KEYS.refs, null);
   if (!r || !Array.isArray(r.categories)) { r = cloneSeed(); write(KEYS.refs, r); }
   for (const t of REF_TABLES) if (!Array.isArray(r[t])) r[t] = [];
+  // Lists saved before "connected parshiyos" existed: fill the pairs in from the built-in data once.
+  if (r.parshiyot.length && !r.parshiyot.some((p) => 'pair_key' in p)) {
+    const seedPairs = Object.fromEntries((seed.parshiyot || []).map((p) => [p.key, p.pair_key || '']));
+    r.parshiyot = r.parshiyot.map((p) => ({ ...p, pair_key: seedPairs[p.key] || '' }));
+    write(KEYS.refs, r);
+  }
   return r;
 }
 
@@ -76,14 +82,18 @@ export function createLocalBackend() {
     },
     progress: {
       async load() { return read(KEYS.progress, []); },
+      // One row per completion. The same item may appear many times (learned twice = two rows).
       async add(rows) {
         const cur = read(KEYS.progress, []);
-        const has = new Set(cur.map((r) => `${r.book_key}|${r.parashah_key || ''}|${r.item}`));
-        for (const row of rows) {
-          const k = `${row.book_key}|${row.parashah_key || ''}|${row.item}`;
-          if (!has.has(k)) { cur.push({ book_key: row.book_key, parashah_key: row.parashah_key || '', item: String(row.item), completed_at: now() }); has.add(k); }
-        }
+        for (const row of rows) cur.push({ book_key: row.book_key, parashah_key: row.parashah_key || '', item: String(row.item), completed_at: row.completed_at || now() });
         write(KEYS.progress, cur);
+      },
+      // Removes the most recent completion of one item.
+      async removeOne({ book_key, parashah_key = '', item }) {
+        const cur = read(KEYS.progress, []);
+        let best = -1;
+        cur.forEach((r, i) => { if (r.book_key === book_key && (r.parashah_key || '') === parashah_key && String(r.item) === String(item) && (best < 0 || String(r.completed_at) >= String(cur[best].completed_at))) best = i; });
+        if (best >= 0) { cur.splice(best, 1); write(KEYS.progress, cur); }
       },
       async remove({ book_key, parashah_key = '', items }) {
         const cur = read(KEYS.progress, []);
@@ -93,10 +103,12 @@ export function createLocalBackend() {
     },
     aliyahLog: {
       async load() { return read(KEYS.log, []); },
+      // Several entries per honor are allowed. A row with an id updates that entry; without an id it is a new entry.
       async save(row) {
         const cur = read(KEYS.log, []);
-        const i = cur.findIndex((r) => r.book_key === row.book_key && r.parashah_key === row.parashah_key && r.aliyah_key === row.aliyah_key);
-        const saved = i >= 0 ? { ...cur[i], ...row, id: cur[i].id } : { id: newId(), created_at: now(), ...row };
+        const { id, ...rest } = row; // a new entry arrives with id undefined; it must not overwrite the fresh id
+        const i = id ? cur.findIndex((r) => r.id === id) : -1;
+        const saved = i >= 0 ? { ...cur[i], ...rest, id, combined: !!row.combined } : { ...rest, id: newId(), created_at: now(), combined: !!row.combined };
         if (i >= 0) cur[i] = saved; else cur.push(saved);
         write(KEYS.log, cur);
         return saved;

@@ -1,6 +1,7 @@
 // Torah Tracker – "live Google Sheet" link.
 // Google Sheets calls this address with =IMPORTDATA("https://<project>.supabase.co/functions/v1/sheet-export?token=...&type=study")
 // and gets that user's data back as a spreadsheet (CSV). Google refreshes IMPORTDATA about once an hour.
+// type = study (one row per completion) | aliyos (one row per entry) | parashah (one row per parashah) | books (one row per sefer)
 //
 // Deploy from the Supabase dashboard (Edge Functions -> Deploy a new function -> "Via Editor"), name it sheet-export,
 // paste this file, and turn OFF "Enforce JWT verification" (Google cannot send a login header).
@@ -65,9 +66,25 @@ Deno.serve(async (req) => {
   if (type === 'aliyos') {
     const log = await all('aliyah_log', link.user_id);
     const rows = log.map((r) => { const b = book[r.book_key] || {}, p = par[r.parashah_key] || {}, a = ali[r.aliyah_key] || {};
-      return [b.name_he || '', b.name_en || '', p.name_he || '', p.name_en || '', a.name_he || '', a.name_en || '', r.date || '', r.synagogue || '', r.notes || '']; })
+      return [b.name_he || '', b.name_en || '', p.name_he || '', p.name_en || '', a.name_he || '', a.name_en || '', r.date || '', r.synagogue || '', r.combined ? 'yes' : '', r.notes || '']; })
       .sort((x, y) => String(x[6]).localeCompare(String(y[6])));
-    body = csv(['sefer_he', 'sefer_en', 'parashah_he', 'parashah_en', 'aliyah_he', 'aliyah_en', 'date', 'synagogue', 'notes'], rows);
+    body = csv(['sefer_he', 'sefer_en', 'parashah_he', 'parashah_en', 'aliyah_he', 'aliyah_en', 'date', 'synagogue', 'combined', 'notes'], rows);
+  } else if (type === 'books') {
+    // one row per sefer: how much of it was learned, and how many times in full
+    const progress = await all('study_progress', link.user_id);
+    const counts = new Map<string, number>();
+    for (const r of progress) { const k = `${r.book_key}|${r.parashah_key || ''}|${r.item}`; counts.set(k, (counts.get(k) || 0) + 1); }
+    const study = aliyot.filter((a) => a.in_study !== false);
+    const rows = [...books].sort((a, b) => ((cat[a.category_key] || {}).sort_order ?? 0) - ((cat[b.category_key] || {}).sort_order ?? 0) || (a.sort_order ?? 0) - (b.sort_order ?? 0)).map((b) => {
+      const c = cat[b.category_key] || {}, s = sec[b.section_key] || {};
+      let keys: string[] = [];
+      if (b.track_mode === 'parshiyot') { for (const p of pars.filter((p) => p.book_key === b.key)) for (const a of study) keys.push(`${b.key}|${p.key}|${a.key}`); }
+      else { for (let n = Number(b.first_item) || 1; n <= (Number(b.item_count) || 0); n++) keys.push(`${b.key}||${n}`); }
+      const cs = keys.map((k) => counts.get(k) || 0);
+      const learned = cs.filter((x) => x > 0).length, full = cs.length ? Math.min(...cs) : 0, completions = cs.reduce((x, y) => x + y, 0);
+      return [c.name_he || '', c.name_en || '', s.name_he || '', s.name_en || '', b.name_he, b.name_en, keys.length, learned, keys.length ? Math.round((learned / keys.length) * 100) : 0, full, completions];
+    });
+    body = csv(['category_he', 'category_en', 'section_he', 'section_en', 'sefer_he', 'sefer_en', 'total_items', 'learned_once', 'percent', 'learned_in_full_times', 'total_completions'], rows);
   } else if (type === 'parashah') {
     const [progress, log] = await Promise.all([all('study_progress', link.user_id), all('aliyah_log', link.user_id)]);
     const learned = new Set(progress.map((r) => `${r.parashah_key}|${r.item}`));
@@ -77,7 +94,7 @@ Deno.serve(async (req) => {
     const headers = ['sefer_he', 'sefer_en', 'parashah_he', 'parashah_en', 'learned_count', ...study.map((a) => `learned: ${a.name_en}`), 'received_count', ...aliyot.map((a) => `received: ${a.name_en}`)];
     const rows = parList.map((p) => { const b = book[p.book_key] || {};
       const l = study.map((a) => (learned.has(`${p.key}|${a.key}`) ? '✓' : ''));
-      const rec = aliyot.map((a) => { const r = received[`${p.key}|${a.key}`]; return r ? (r.date || '✓') + (r.synagogue ? ` · ${r.synagogue}` : '') : ''; });
+      const rec = aliyot.map((a) => { const r = received[`${p.key}|${a.key}`]; return r ? (r.date || '✓') + (r.synagogue ? ` · ${r.synagogue}` : '') + (r.combined ? ' (combined)' : '') : ''; });
       return [b.name_he || '', b.name_en || '', p.name_he, p.name_en, l.filter(Boolean).length, ...l, rec.filter(Boolean).length, ...rec]; });
     body = csv(headers, rows);
   } else {

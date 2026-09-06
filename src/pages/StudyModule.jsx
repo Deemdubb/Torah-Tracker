@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { BookMarked } from 'lucide-react';
+import { BookMarked, Minus } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useData } from '@/contexts/DataContext';
-import { resolveStudyPath } from '@/lib/model';
+import { resolveStudyPath, countOf } from '@/lib/model';
+import { haptic } from '@/lib/haptics';
 import Breadcrumb from '@/components/Breadcrumb';
 import ProgressPill from '@/components/ProgressPill';
 import CircularCheckbox from '@/components/CircularCheckbox';
@@ -11,10 +12,29 @@ import { Button, Name } from '@/components/ui';
 
 const splitParts = (splat) => (splat || '').split('/').filter(Boolean).map((p) => { try { return decodeURIComponent(p); } catch { return p; } });
 
+// One tappable row: tap = learned once more (+1). The small minus takes one away.
+function ItemRow({ count, onAdd, onRemove, removeLabel, children, big = false }) {
+  return (
+    <div className="flex items-stretch gap-1.5">
+      <button type="button" onClick={onAdd} aria-pressed={count > 0}
+        className={`tap flex-1 flex items-center gap-3 px-4 ${big ? 'py-3.5' : 'py-3'} rounded-2xl bg-card/70 border border-border hover:border-primary/40 active:scale-[0.99] active:bg-card transition text-start min-w-0`}>
+        <CircularCheckbox checked={count > 0} count={count} />
+        <div className="flex-1 min-w-0 text-start">{children}</div>
+      </button>
+      {count > 0 && (
+        <button type="button" onClick={onRemove} aria-label={removeLabel} title={removeLabel}
+          className="tap w-11 shrink-0 rounded-2xl border border-border bg-card/40 text-muted-foreground hover:text-destructive hover:border-destructive/40 active:scale-95 transition flex items-center justify-center">
+          <Minus className="w-4 h-4" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function StudyModule() {
   const { '*': splat } = useParams();
   const { t, name, leafLabel, rangeLabel } = useLang();
-  const { idx, pm, toggleItem, setAllItems } = useData();
+  const { idx, pm, addOne, removeOne, fillAll, againAll, clearAll } = useData();
   const parts = useMemo(() => splitParts(splat), [splat]);
   const view = useMemo(() => resolveStudyPath(parts, idx, pm), [parts, idx, pm]);
 
@@ -31,7 +51,7 @@ export default function StudyModule() {
         {view.type !== 'categories' && <div className="mb-5" />}
         {view.items.length === 0 && <div className="text-center py-16 text-muted-foreground">{t('noItems')}</div>}
         <div className="space-y-2.5">
-          {view.items.map((it) => <ProgressPill key={it.key} name={name(it.row)} path={it.path} total={it.total} completed={it.completed} />)}
+          {view.items.map((it) => <ProgressPill key={it.key} name={name(it.row)} path={it.path} total={it.total} completed={it.completed} cycles={it.cycles || 0} />)}
         </div>
       </div>
     );
@@ -50,13 +70,20 @@ export default function StudyModule() {
     );
   }
 
-  // leaf screens: 'leaves' (chapters / pages) or 'chumash_aliyot' (7 aliyos of one parashah)
-  const set = pm.get(`${view.scope.book_key}|${view.scope.parashah_key || ''}`) || new Set();
+  // leaf screens: 'leaves' (chapters / pages) or 'chumash_aliyot' (the aliyos of one parashah)
   const values = view.type === 'leaves' ? view.items : view.aliyot.map((a) => a.key);
+  const counts = values.map((v) => countOf(pm, view.scope, v));
   const total = values.length;
-  const completed = values.filter((v) => set.has(v)).length;
-  const percent = total ? Math.round((completed / total) * 100) : 0;
-  const allDone = total > 0 && completed >= total;
+  const learned = counts.filter((c) => c > 0).length;
+  const cycles = total ? Math.min(...counts) : 0;
+  const percent = total ? Math.round((learned / total) * 100) : 0;
+  const allLearned = total > 0 && learned >= total;
+
+  const add = (v) => { haptic('tap'); addOne(view.scope, v); };
+  const remove = (v) => { haptic('remove'); removeOne(view.scope, v); };
+  const markAll = () => { haptic('success'); fillAll(view.scope, values); };
+  const learnAgain = () => { if (window.confirm(t('confirmLearnAgain'))) { haptic('success'); againAll(view.scope, values); } };
+  const clear = () => { if (window.confirm(t('confirmClearAll'))) { haptic('remove'); clearAll(view.scope); } };
 
   return (
     <div className="pt-1">
@@ -69,38 +96,40 @@ export default function StudyModule() {
       ) : (
         <h1 className="text-3xl font-display font-extrabold mb-5"><Name>{name(view.title)}</Name></h1>
       )}
-      <div className="flex items-center justify-between mb-4 gap-3">
-        <div className="text-sm text-muted-foreground tabular-nums">{completed} / {total} · {percent}%</div>
-        <Button variant="soft" size="sm" onClick={() => setAllItems(view.scope, values, !allDone)}>{allDone ? t('unmarkAll') : t('markAll')}</Button>
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+        <div className="text-sm text-muted-foreground tabular-nums flex items-center gap-2">
+          <span>{learned} / {total} · {percent}%</span>
+          {cycles > 0 && <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-md bg-primary/15 text-primary" title={`${cycles} ${t('timesFull')}`}>×{cycles} {t('timesFull')}</span>}
+        </div>
+        <div className="flex items-center gap-2">
+          {!allLearned ? (
+            <Button variant="soft" size="sm" onClick={markAll}>{t('markAll')}</Button>
+          ) : (
+            <>
+              <Button variant="soft" size="sm" onClick={learnAgain}>{t('learnAgain')}</Button>
+              <Button variant="ghost" size="sm" onClick={clear}>{t('clearAll')}</Button>
+            </>
+          )}
+        </div>
       </div>
 
       {view.type === 'leaves' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {view.items.map((n) => {
-            const checked = set.has(n);
-            return (
-              <button key={n} type="button" onClick={() => toggleItem(view.scope, n)} aria-pressed={checked}
-                className="tap flex items-center gap-3 px-4 py-3 rounded-2xl bg-card/70 border border-border hover:border-primary/40 active:bg-card transition text-start">
-                <CircularCheckbox checked={checked} />
-                <span className="text-lg font-display"><Name>{leafLabel(view.leafType, n)}</Name></span>
-              </button>
-            );
-          })}
+          {view.items.map((n, i) => (
+            <ItemRow key={n} count={counts[i]} onAdd={() => add(n)} onRemove={() => remove(n)} removeLabel={t('removeOne')}>
+              <span className="text-lg font-display"><Name>{leafLabel(view.leafType, n)}</Name></span>
+            </ItemRow>
+          ))}
         </div>
       ) : (
         <div className="space-y-2">
           {view.aliyot.map((a, i) => {
-            const checked = set.has(a.key);
             const range = view.ranges[i];
             return (
-              <button key={a.key} type="button" onClick={() => toggleItem(view.scope, a.key)} aria-pressed={checked}
-                className="tap w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card/70 border border-border hover:border-primary/40 active:bg-card transition text-start">
-                <CircularCheckbox checked={checked} />
-                <div className="flex-1 text-start">
-                  <div className="text-xl font-display font-semibold"><Name>{name(a)}</Name></div>
-                  {range && <div className="text-xs text-muted-foreground mt-0.5"><Name>{rangeLabel(range[0], range[1])}</Name></div>}
-                </div>
-              </button>
+              <ItemRow key={a.key} big count={counts[i]} onAdd={() => add(a.key)} onRemove={() => remove(a.key)} removeLabel={t('removeOne')}>
+                <div className="text-xl font-display font-semibold"><Name>{name(a)}</Name></div>
+                {range && <div className="text-xs text-muted-foreground mt-0.5"><Name>{rangeLabel(range[0], range[1])}</Name></div>}
+              </ItemRow>
             );
           })}
         </div>

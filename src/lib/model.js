@@ -1,5 +1,10 @@
 // Pure helpers that turn the database lists + progress into what the screens show.
 // No React here, so it is easy to test.
+//
+// Progress is a list of "completions": one row every time an item (a perek, a daf, an aliyah) is learned.
+// The same item can appear many times = learned many times. In memory we keep counts:
+//   pm : Map<"book|parashah", Map<item, count>>
+// "Learned" for progress bars means count >= 1. A sefer shows "x2" when every item has count >= 2.
 
 export const scopeKey = (bookKey, parashahKey = '') => `${bookKey}|${parashahKey || ''}`;
 export const logKey = (bookKey, parashahKey, aliyahKey) => `${bookKey}|${parashahKey}|${aliyahKey}`;
@@ -34,13 +39,22 @@ export function bookItems(book) {
   return items;
 }
 
-// How many of `keys` are in the set. Only items that exist right now are counted, so the
-// numbers on the pills always match the leaf screen (old rows for a removed item are ignored).
-function countIn(set, keys) {
-  if (!set) return 0;
+// ---- counts ----
+export const countOf = (pm, scope, item) => pm.get(scopeKey(scope.book_key, scope.parashah_key))?.get(String(item)) || 0;
+
+// How many of `keys` have been learned at least once.
+function learnedIn(counts, keys) {
+  if (!counts) return 0;
   let n = 0;
-  for (const k of keys) if (set.has(k)) n++;
+  for (const k of keys) if ((counts.get(k) || 0) > 0) n++;
   return n;
+}
+// The smallest count among `keys`: how many times the whole set was learned in full.
+function cyclesIn(counts, keys) {
+  if (!keys.length) return 0;
+  let min = Infinity;
+  for (const k of keys) { const c = counts?.get(k) || 0; if (c < min) min = c; if (min === 0) return 0; }
+  return min === Infinity ? 0 : min;
 }
 const studyAliyahKeys = (idx) => idx.studyAliyot.map((a) => a.key);
 
@@ -48,12 +62,17 @@ export function bookTotals(idx, book, pm) {
   if (book.track_mode === 'parshiyot') {
     const ps = idx.parshiyotOf(book.key);
     const keys = studyAliyahKeys(idx);
-    let completed = 0;
-    for (const p of ps) completed += countIn(pm.get(scopeKey(book.key, p.key)), keys);
-    return { total: ps.length * keys.length, completed };
+    let completed = 0, cycles = ps.length ? Infinity : 0;
+    for (const p of ps) {
+      const counts = pm.get(scopeKey(book.key, p.key));
+      completed += learnedIn(counts, keys);
+      cycles = Math.min(cycles, cyclesIn(counts, keys));
+    }
+    return { total: ps.length * keys.length, completed, cycles: cycles === Infinity ? 0 : cycles };
   }
   const items = bookItems(book);
-  return { total: items.length, completed: countIn(pm.get(scopeKey(book.key)), items) };
+  const counts = pm.get(scopeKey(book.key));
+  return { total: items.length, completed: learnedIn(counts, items), cycles: cyclesIn(counts, items) };
 }
 
 function sum(list, fn) {
@@ -112,7 +131,10 @@ export function resolveStudyPath(parts, idx, pm) {
     const ps = idx.parshiyotOf(book.key);
     const keys = studyAliyahKeys(idx);
     if (rest.length === 0) {
-      return { type: 'parshiyot', title: book, crumbs, items: ps.map((p) => item(p, studyPath.par(cat, sec, book, p), { total: keys.length, completed: countIn(pm.get(scopeKey(book.key, p.key)), keys) })) };
+      return {
+        type: 'parshiyot', title: book, crumbs,
+        items: ps.map((p) => { const counts = pm.get(scopeKey(book.key, p.key)); return item(p, studyPath.par(cat, sec, book, p), { total: keys.length, completed: learnedIn(counts, keys), cycles: cyclesIn(counts, keys) }); }),
+      };
     }
     const par = idx.par[rest[0]];
     if (!par || par.book_key !== book.key) return null;
@@ -131,9 +153,11 @@ export const aliyosPath = {
 };
 
 // parts = URL segments after /aliyos, e.g. ["tanach-bereishis","noach"]
+// logMap : Map<"book|parashah|aliyah", row[]>  (one honor can have several entries)
 export function resolveAliyosPath(parts, idx, logMap) {
   const all = idx.aliyot;
-  const countPar = (b, p) => all.filter((a) => logMap.has(logKey(b.key, p.key, a.key))).length;
+  const has = (b, p, a) => (logMap.get(logKey(b.key, p.key, a.key))?.length || 0) > 0;
+  const countPar = (b, p) => all.filter((a) => has(b, p, a)).length;
   if (parts.length === 0) {
     return {
       type: 'sefarim', crumbs: [],
@@ -151,24 +175,33 @@ export function resolveAliyosPath(parts, idx, logMap) {
   }
   const par = idx.par[parts[1]];
   if (!par || par.book_key !== book.key) return null;
-  return { type: 'aliyot', book, parashah: par, aliyot: all, crumbs: [{ row: book, path: aliyosPath.book(book) }] };
+  return { type: 'aliyot', book, parashah: par, partner: par.pair_key ? idx.par[par.pair_key] || null : null, aliyot: all, crumbs: [{ row: book, path: aliyosPath.book(book) }] };
 }
 
-// Builds the in-memory progress map from database rows.
+// Builds the in-memory count map from completion rows.
 export function progressMapFrom(rows) {
   const pm = new Map();
   for (const r of rows || []) {
     const k = scopeKey(r.book_key, r.parashah_key || '');
-    if (!pm.has(k)) pm.set(k, new Set());
-    pm.get(k).add(String(r.item));
+    if (!pm.has(k)) pm.set(k, new Map());
+    const counts = pm.get(k);
+    const item = String(r.item);
+    counts.set(item, (counts.get(item) || 0) + 1);
   }
   return pm;
 }
+// Groups aliyah entries by honor, newest date first.
 export function logMapFrom(rows) {
   const m = new Map();
-  for (const r of rows || []) m.set(logKey(r.book_key, r.parashah_key, r.aliyah_key), r);
+  for (const r of rows || []) {
+    const k = logKey(r.book_key, r.parashah_key, r.aliyah_key);
+    if (!m.has(k)) m.set(k, []);
+    m.get(k).push(r);
+  }
+  for (const list of m.values()) list.sort((a, b) => String(b.date || b.created_at || '').localeCompare(String(a.date || a.created_at || '')));
   return m;
 }
+export const allEntries = (logMap) => [...logMap.values()].flat();
 
 // Helpers used by the admin screens to keep sort_order tidy within one group.
 export function siblingsOf(idx, table, row) {

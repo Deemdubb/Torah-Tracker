@@ -36,15 +36,24 @@ export default function AdminBook() {
     { name: 'name_he', label: t('nameHe'), type: 'text', required: true, dir: 'rtl' },
     { name: 'name_en', label: t('nameEn'), type: 'text', required: true, dir: 'ltr' },
     { name: 'aliyah_ranges', label: t('aliyahRanges'), type: 'ranges', aliyot: studyAliyot },
+    { name: 'pair_key', label: t('pairLabel'), type: 'select', options: [{ value: '', label: t('pairNone') }, ...parshiyot.filter((p) => p.key !== form?.row?.key).map((p) => ({ value: p.key, label: name(p) }))] },
     ...(form?.row?.key ? [{ name: 'key', label: t('key'), type: 'readonly', hint: t('keyHint') }] : []),
   ];
 
   const save = async (v) => {
     if (form.kind === 'book') return saveRef('books', { ...v, section_key: cat?.has_sections ? (v.section_key || '') : '', item_count: Number(v.item_count) || 0, first_item: Number(v.first_item) || 1 });
     const ranges = (v.aliyah_ranges || []).map((r) => [Number(r?.[0]) || 1, Number(r?.[1]) || Number(r?.[0]) || 1]);
-    const row = { ...v, book_key: book.key, aliyah_ranges: ranges };
+    const row = { ...v, book_key: book.key, aliyah_ranges: ranges, pair_key: v.pair_key || '' };
     if (!row.key) { row.key = uniqueKey(slugify(v.name_en), idx.parshiyot.map((p) => p.key)); row.sort_order = nextOrder(parshiyot); }
-    return saveRef('parshiyot', row);
+    const before = idx.par[row.key]?.pair_key || '';
+    await saveRef('parshiyot', row);
+    // keep the connection two-sided: the partner points back, and an old partner is released
+    if (before && before !== row.pair_key && idx.par[before]) await saveRef('parshiyot', { ...idx.par[before], pair_key: '' });
+    if (row.pair_key && idx.par[row.pair_key]) {
+      const partner = idx.par[row.pair_key];
+      if (partner.pair_key && partner.pair_key !== row.key && idx.par[partner.pair_key]) await saveRef('parshiyot', { ...idx.par[partner.pair_key], pair_key: '' });
+      await saveRef('parshiyot', { ...partner, pair_key: row.key });
+    }
   };
 
   return (
@@ -72,6 +81,7 @@ export default function AdminBook() {
           <div className="space-y-2">
             {parshiyot.map((p, i) => (
               <AdminRow key={p.key} row={p} table="parshiyot" index={i} count={parshiyot.length}
+                badge={p.pair_key && idx.par[p.pair_key] ? `${t('combinedTag')}: ${name(idx.par[p.pair_key])}` : null}
                 subtitle={p.aliyah_ranges?.length ? rangeLabel(p.aliyah_ranges[0]?.[0], p.aliyah_ranges[p.aliyah_ranges.length - 1]?.[1]) : ''}
                 onEdit={() => setForm({ kind: 'parashah', row: p })} />
             ))}

@@ -41,7 +41,10 @@
   ::-webkit-scrollbar-track { background: transparent; }
 }
 
+@keyframes tt-bump { 0% { transform: scale(1); } 35% { transform: scale(1.28); } 100% { transform: scale(1); } }
+
 @layer utilities {
+  .animate-bump { animation: tt-bump 0.28s ease-out; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   .safe-bottom { padding-bottom: max(6rem, calc(env(safe-area-inset-bottom) + 5rem)); }

@@ -70,9 +70,9 @@ function syncAll() {
   writeSheet('Study Progress', ['user', 'category_he', 'category_en', 'section_he', 'section_en', 'book_he', 'book_en', 'parashah_he', 'parashah_en', 'item_he', 'item_en', 'completed_at'], studyRows);
 
   const log = fetchTable('aliyah_log', userFilter);
-  const logRows = log.map((r) => { const b = books[r.book_key] || {}, p = pars[r.parashah_key] || {}, a = alis[r.aliyah_key] || {}; return [emailOf[r.user_id] || '', b.name_he || '', b.name_en || '', p.name_he || '', p.name_en || '', a.name_he || '', a.name_en || '', r.date || '', r.synagogue || '', r.notes || '']; })
+  const logRows = log.map((r) => { const b = books[r.book_key] || {}, p = pars[r.parashah_key] || {}, a = alis[r.aliyah_key] || {}; return [emailOf[r.user_id] || '', b.name_he || '', b.name_en || '', p.name_he || '', p.name_en || '', a.name_he || '', a.name_en || '', r.date || '', r.synagogue || '', r.combined ? 'yes' : '', r.notes || '']; })
     .sort((x, y) => String(x[7]).localeCompare(String(y[7])));
-  writeSheet('Aliyos Log', ['user', 'sefer_he', 'sefer_en', 'parashah_he', 'parashah_en', 'aliyah_he', 'aliyah_en', 'date', 'synagogue', 'notes'], logRows);
+  writeSheet('Aliyos Log', ['user', 'sefer_he', 'sefer_en', 'parashah_he', 'parashah_en', 'aliyah_he', 'aliyah_en', 'date', 'synagogue', 'combined', 'notes'], logRows);
 
   // One row per parashah: which aliyos were learned (Study) and which were received (Aliyos).
   const aliList = Object.values(alis).sort((a, b) => a.sort_order - b.sort_order);

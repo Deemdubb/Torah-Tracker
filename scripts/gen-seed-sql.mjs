@@ -22,8 +22,8 @@ upsert('sections', ['key', 'category_key', 'name_he', 'name_en', 'sort_order'], 
   (r) => [q(r.key), q(r.category_key), q(r.name_he), q(r.name_en), r.sort_order]);
 upsert('books', ['key', 'category_key', 'section_key', 'name_he', 'name_en', 'item_count', 'first_item', 'track_mode', 'sort_order'], data.books,
   (r) => [q(r.key), q(r.category_key), q(r.section_key || ''), q(r.name_he), q(r.name_en), r.item_count, r.first_item, q(r.track_mode), r.sort_order]);
-upsert('parshiyot', ['key', 'book_key', 'name_he', 'name_en', 'sort_order', 'aliyah_ranges'], data.parshiyot,
-  (r) => [q(r.key), q(r.book_key), q(r.name_he), q(r.name_en), r.sort_order, `'${JSON.stringify(r.aliyah_ranges)}'::jsonb`]);
+upsert('parshiyot', ['key', 'book_key', 'name_he', 'name_en', 'sort_order', 'aliyah_ranges', 'pair_key'], data.parshiyot,
+  (r) => [q(r.key), q(r.book_key), q(r.name_he), q(r.name_en), r.sort_order, `'${JSON.stringify(r.aliyah_ranges)}'::jsonb`, q(r.pair_key || '')]);
 upsert('aliyot', ['key', 'name_he', 'name_en', 'sort_order', 'in_study'], data.aliyot,
   (r) => [q(r.key), q(r.name_he), q(r.name_en), r.sort_order, b(r.in_study)]);
 

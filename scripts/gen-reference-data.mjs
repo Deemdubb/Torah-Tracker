@@ -21,6 +21,10 @@ const { TITLES } = await import(pathToFileURL(join(tmp, 'i18n.js')).href);
 const slug = (s) => s.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const en = (he) => TITLES[he] || he;
 
+// The seven pairs that are read together in some years (Israel and the diaspora can differ).
+const PAIRS = [['ויקהל', 'פקודי'], ['תזריע', 'מצורע'], ['אחרי מות', 'קדושים'], ['בהר', 'בחוקותי'], ['חקת', 'בלק'], ['מטות', 'מסעי'], ['נצבים', 'וילך']];
+const pairOf = (he) => { for (const [a, b] of PAIRS) { if (he === a) return b; if (he === b) return a; } return ''; };
+
 const categories = [], sections = [], books = [], parshiyot = [], aliyot = [];
 STUDY_CATEGORIES.forEach((cat, ci) => {
   const catKey = slug(en(cat.id));
@@ -40,7 +44,7 @@ STUDY_CATEGORIES.forEach((cat, ci) => {
     if (isChumash) {
       const bookKey = `${catKey}-${slug(en(b.name))}`;
       Object.entries(CHUMASH_PARSHIYOT[b.name]).forEach(([p, ranges], pi) => {
-        parshiyot.push({ key: slug(en(p)), book_key: bookKey, name_he: p, name_en: en(p), sort_order: pi + 1, aliyah_ranges: ranges });
+        parshiyot.push({ key: slug(en(p)), book_key: bookKey, name_he: p, name_en: en(p), sort_order: pi + 1, aliyah_ranges: ranges, pair_key: pairOf(p) ? slug(en(pairOf(p))) : '' });
       });
     }
   };
@@ -67,4 +71,5 @@ writeFileSync(join(root, 'src/data/referenceData.json'), JSON.stringify(out, nul
 console.log({ categories: categories.length, sections: sections.length, books: books.length, parshiyot: parshiyot.length, aliyot: aliyot.length });
 console.log('keys sample:', books.slice(0, 3).map(b => b.key), parshiyot.slice(0, 3).map(p => p.key), aliyot.map(a => a.key));
 const dup = (arr) => arr.filter((k, i) => arr.indexOf(k) !== i);
+console.log('pairs:', parshiyot.filter(p => p.pair_key).map(p => `${p.key}->${p.pair_key}`));
 console.log('duplicate keys:', dup(books.map(b => b.key)), dup(parshiyot.map(p => p.key)), dup(sections.map(s => s.key)));

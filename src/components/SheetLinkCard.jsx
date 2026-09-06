@@ -66,6 +66,7 @@ export default function SheetLinkCard() {
                 <FormulaRow label={t('sheetTabStudy')} formula={formula('study')} />
                 <FormulaRow label={t('sheetTabAliyos')} formula={formula('aliyos')} />
                 <FormulaRow label={t('sheetTabParashah')} formula={formula('parashah')} />
+                <FormulaRow label={t('sheetTabBooks')} formula={formula('books')} />
               </div>
               <p className="text-xs text-muted-foreground">{t('sheetWarning')}</p>
               <Button variant="outline" size="sm" onClick={make} disabled={busy}><RefreshCw className="w-4 h-4" />{t('sheetRegenerate')}</Button>

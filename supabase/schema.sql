@@ -61,7 +61,8 @@ create table if not exists public.parshiyot (
   name_he text not null,
   name_en text not null default '',
   sort_order integer not null default 0,
-  aliyah_ranges jsonb not null default '[]'::jsonb
+  aliyah_ranges jsonb not null default '[]'::jsonb,
+  pair_key text not null default ''            -- the other half of a double parashah, e.g. vayakhel <-> pekudei
 );
 create table if not exists public.aliyot (
   key text primary key,
@@ -78,10 +79,11 @@ create table if not exists public.study_progress (
   book_key text not null,
   parashah_key text not null default '',
   item text not null,
-  completed_at timestamptz not null default now(),
-  unique (user_id, book_key, parashah_key, item)
+  completed_at timestamptz not null default now()
+  -- one row per completion: learning the same daf twice = two rows
 );
 create index if not exists study_progress_user_idx on public.study_progress (user_id, book_key);
+create index if not exists study_progress_item_idx on public.study_progress (user_id, book_key, parashah_key, item);
 
 create table if not exists public.aliyah_log (
   id uuid primary key default gen_random_uuid(),
@@ -92,8 +94,9 @@ create table if not exists public.aliyah_log (
   date date,
   synagogue text not null default '',
   notes text not null default '',
-  created_at timestamptz not null default now(),
-  unique (user_id, book_key, parashah_key, aliyah_key)
+  combined boolean not null default false,     -- the week was read as a double parashah
+  created_at timestamptz not null default now()
+  -- several entries per honor are allowed (received the same aliyah in different years)
 );
 create index if not exists aliyah_log_user_idx on public.aliyah_log (user_id);
 

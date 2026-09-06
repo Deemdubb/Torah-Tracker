@@ -44,8 +44,12 @@ export function createSupabaseBackend(url, key) {
   async function exec(op) {
     if (op.type === 'progress.add') {
       const user_id = await uid();
-      const rows = op.rows.map((r) => ({ user_id, book_key: r.book_key, parashah_key: r.parashah_key || '', item: String(r.item) }));
-      check(await sb.from('study_progress').upsert(rows, { onConflict: 'user_id,book_key,parashah_key,item', ignoreDuplicates: true }));
+      const rows = op.rows.map((r) => ({ user_id, book_key: r.book_key, parashah_key: r.parashah_key || '', item: String(r.item), ...(r.completed_at ? { completed_at: r.completed_at } : {}) }));
+      check(await sb.from('study_progress').insert(rows));
+    } else if (op.type === 'progress.removeOne') {
+      const { book_key, parashah_key = '', item } = op.scope;
+      const latest = check(await sb.from('study_progress').select('id').eq('book_key', book_key).eq('parashah_key', parashah_key).eq('item', String(item)).order('completed_at', { ascending: false }).limit(1));
+      if (latest?.[0]) check(await sb.from('study_progress').delete().eq('id', latest[0].id));
     } else if (op.type === 'progress.remove') {
       const { book_key, parashah_key = '', items } = op.scope;
       let q = sb.from('study_progress').delete().eq('book_key', book_key).eq('parashah_key', parashah_key);
@@ -119,14 +123,17 @@ export function createSupabaseBackend(url, key) {
     progress: {
       async load() { return fetchAll(() => sb.from('study_progress').select('book_key,parashah_key,item,completed_at', { count: 'exact' }).order('id')); },
       add(rows) { return runOrQueue({ type: 'progress.add', rows }); },
+      removeOne(scope) { return runOrQueue({ type: 'progress.removeOne', scope }); },
       remove(scope) { return runOrQueue({ type: 'progress.remove', scope }); },
     },
     aliyahLog: {
       async load() { return fetchAll(() => sb.from('aliyah_log').select('*', { count: 'exact' }).order('created_at').order('id')); },
+      // Several entries per honor are allowed. With an id the entry is updated, without one a new entry is added.
       async save(row) {
+        const payload = { book_key: row.book_key, parashah_key: row.parashah_key, aliyah_key: row.aliyah_key, date: row.date || null, synagogue: row.synagogue || '', notes: row.notes || '', combined: !!row.combined };
+        if (row.id) return check(await sb.from('aliyah_log').update(payload).eq('id', row.id).select().single());
         const user_id = await uid();
-        const payload = { user_id, book_key: row.book_key, parashah_key: row.parashah_key, aliyah_key: row.aliyah_key, date: row.date || null, synagogue: row.synagogue || '', notes: row.notes || '' };
-        return check(await sb.from('aliyah_log').upsert(payload, { onConflict: 'user_id,book_key,parashah_key,aliyah_key' }).select().single());
+        return check(await sb.from('aliyah_log').insert({ user_id, ...payload }).select().single());
       },
       async remove(id) { check(await sb.from('aliyah_log').delete().eq('id', id)); },
     },
