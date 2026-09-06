@@ -107,7 +107,7 @@ export function resolveStudyPath(parts, idx, pm) {
       if (!secs.length && !idx.booksOfCategory(cat.key).length) return { type: 'placeholder', title: cat, crumbs: [] };
       return { type: 'sections', title: cat, crumbs: [], items: secs.map((s) => item(s, studyPath.sec(cat, s), sectionTotals(idx, s, pm))) };
     }
-    const books = idx.booksOf(cat.key, '');
+    const books = idx.booksOfCategory(cat.key); // no sections: every sefer of the category, whatever its old section was
     if (!books.length) return { type: 'placeholder', title: cat, crumbs: [] };
     return { type: 'books', title: cat, crumbs: [], items: books.map((b) => item(b, studyPath.book(cat, null, b), bookTotals(idx, b, pm))) };
   }

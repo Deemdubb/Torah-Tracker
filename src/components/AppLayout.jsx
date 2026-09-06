@@ -20,7 +20,7 @@ export default function AppLayout() {
   const { pathname } = useLocation();
   const { dir, t } = useLang();
   const { isAdmin } = useAuth();
-  const { loading, error, setError, reload, pendingCount } = useData();
+  const { loading, error, setError, reload, pendingCount, offline } = useData();
   const tab = pathname.startsWith('/aliyos') ? 'aliyos' : pathname.startsWith('/dashboard') ? 'dashboard' : pathname.startsWith('/admin') ? 'admin' : pathname.startsWith('/settings') ? 'settings' : 'study';
 
   return (
@@ -50,6 +50,9 @@ export default function AppLayout() {
         </div>
       </header>
       <main className="max-w-3xl mx-auto px-4 pt-3 safe-bottom">
+        {offline && (
+          <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground"><CloudOff className="w-3.5 h-3.5" />{t('offlineCached')}</div>
+        )}
         {pendingCount > 0 && (
           <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground"><CloudOff className="w-3.5 h-3.5" />{pendingCount} {t('pendingSync')}</div>
         )}

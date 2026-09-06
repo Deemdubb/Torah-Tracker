@@ -54,7 +54,7 @@ export default function AdminCategory() {
   };
 
   const BookList = ({ secKey }) => {
-    const books = idx.booksOf(cat.key, secKey);
+    const books = cat.has_sections ? idx.booksOf(cat.key, secKey) : idx.booksOfCategory(cat.key);
     return (
       <div className="space-y-2">
         {books.map((b, i) => (

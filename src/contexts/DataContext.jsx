@@ -7,6 +7,10 @@ import { buildIndex, logMapFrom, logKey, progressMapFrom, siblingsOf } from '@/l
 
 const DataContext = createContext(null);
 const EMPTY = { categories: [], sections: [], books: [], parshiyot: [], aliyot: [] };
+const isNetworkError = (e) => /fetch|network|offline|load failed/i.test(String(e?.message || e));
+const cacheKey = (user) => (user && db.mode === 'supabase' ? `tt.cache.${user.id}` : null);
+const readCache = (k) => { try { return k ? JSON.parse(localStorage.getItem(k) || 'null') : null; } catch { return null; } };
+const writeCache = (k, v) => { try { if (k) localStorage.setItem(k, JSON.stringify(v)); } catch { /* full or blocked: ignore */ } };
 
 export function DataProvider({ children }) {
   const { user, isAdmin } = useAuth();
@@ -23,6 +27,7 @@ export function DataProvider({ children }) {
     setErrorState(/duplicate key|violates unique|does not exist|schema cache/i.test(msg) ? 'db-needs-update' : msg);
   }, []);
   const [pendingCount, setPendingCount] = useState(0);
+  const [offline, setOffline] = useState(false);
 
   const reload = useCallback(async () => {
     setLoading(true); setError(null);
@@ -30,12 +35,24 @@ export function DataProvider({ children }) {
       let r = await db.refs.load();
       if ((!r.categories || r.categories.length === 0) && isAdmin) r = await db.refs.seedDefaults();
       const [progress, log] = await Promise.all([db.progress.load(), db.aliyahLog.load()]);
-      setRefs(r); setRows(progress || []); setLogMap(logMapFrom(log));
-    } catch (e) { console.error(e); setError(e); }
-    finally { setLoading(false); }
-  }, [isAdmin, setError]);
+      setRefs(r); setRows(progress || []); setLogMap(logMapFrom(log)); setOffline(false);
+      writeCache(cacheKey(user), { refs: r, progress: progress || [], log: log || [], at: Date.now() });
+    } catch (e) {
+      console.error(e);
+      const cached = isNetworkError(e) ? readCache(cacheKey(user)) : null;
+      if (cached) { setRefs(cached.refs || EMPTY); setRows(cached.progress || []); setLogMap(logMapFrom(cached.log)); setOffline(true); }
+      else setError(e);
+    } finally { setLoading(false); }
+  }, [isAdmin, setError, user]);
 
   useEffect(() => { if (user) reload(); }, [user, reload]);
+  // keep the saved copy fresh so the app still opens with your data when there is no signal
+  useEffect(() => { if (user && !loading && !offline) writeCache(cacheKey(user), { refs, progress: rows, log: [...logMap.values()].flat(), at: Date.now() }); }, [user, loading, offline, refs, rows, logMap]);
+  useEffect(() => {
+    const back = () => { db.flush?.().catch(() => {}).then(() => { if (offline) reload(); }); };
+    window.addEventListener('online', back);
+    return () => window.removeEventListener('online', back);
+  }, [offline, reload]);
   useEffect(() => {
     const tick = () => setPendingCount(db.pendingCount());
     tick();
@@ -156,10 +173,10 @@ export function DataProvider({ children }) {
   }, [reload, rows, logMap]);
 
   const value = useMemo(() => ({
-    refs, idx, pm, progressRows: rows, logMap, loading, error, setError, reload, pendingCount,
+    refs, idx, pm, progressRows: rows, logMap, loading, error, setError, reload, pendingCount, offline,
     addOne, removeOne, fillAll, againAll, clearAll, saveAliyah, removeAliyah, markAllAliyos,
     saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup,
-  }), [refs, idx, pm, rows, logMap, loading, error, setError, reload, pendingCount, addOne, removeOne, fillAll, againAll, clearAll, saveAliyah, removeAliyah, markAllAliyos, saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup]);
+  }), [refs, idx, pm, rows, logMap, loading, error, setError, reload, pendingCount, offline, addOne, removeOne, fillAll, againAll, clearAll, saveAliyah, removeAliyah, markAllAliyos, saveRef, removeRef, reorder, resetDefaults, importRefs, exportBackup, importBackup]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }

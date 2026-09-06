@@ -49,6 +49,7 @@ export const STRINGS = {
     restoreDone: 'הגיבוי נטען', installTitle: 'הוספה למסך הבית',
     installText: 'באייפון: פתח בספארי, לחץ על כפתור השיתוף ובחר "הוסף למסך הבית".',
     pendingSync: 'שינויים מחכים לסנכרון', offline: 'לא מחובר לאינטרנט',
+    offlineCached: 'אין חיבור לאינטרנט. מוצגים הנתונים השמורים במכשיר.', forgotPassword: 'שכחת סיסמה?', enterEmailFirst: 'הכנס את האימייל קודם', resetSent: 'שלחנו לך קישור במייל. אחרי הלחיצה עליו, הגדר סיסמה חדשה בהגדרות.',
     // admin
     adminTitle: 'ניהול', adminSubtitle: 'ערוך את רשימות התורה. השינויים נראים לכל המשתמשים.',
     categories: 'קטגוריות', sections: 'חלקים', books: 'ספרים', parshiyot: 'פרשות', aliyot: 'עליות',
@@ -112,6 +113,7 @@ export const STRINGS = {
     restoreDone: 'Backup loaded', installTitle: 'Add to Home Screen',
     installText: 'On iPhone: open in Safari, tap the Share button, then "Add to Home Screen".',
     pendingSync: 'changes waiting to sync', offline: 'You are offline',
+    offlineCached: 'No internet. Showing the data saved on this device.', forgotPassword: 'Forgot password?', enterEmailFirst: 'Enter your email first', resetSent: 'We emailed you a link. After you click it, set a new password in Settings.',
     adminTitle: 'Admin', adminSubtitle: 'Edit the Torah lists. Changes are visible to all users.',
     categories: 'Categories', sections: 'Sections', books: 'Sefarim', parshiyot: 'Parshiyos', aliyot: 'Aliyos',
     aliyahNames: 'Aliyah names', dataTools: 'Data tools',

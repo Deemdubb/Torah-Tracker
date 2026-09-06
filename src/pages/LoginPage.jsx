@@ -9,7 +9,7 @@ import { Banner, Button, Card, Field, Input } from '@/components/ui';
 // Three views: 'signin' (email + password), 'signup' (email + password + confirm), 'link' (email only, sign-in link by email).
 export default function LoginPage() {
   const { t, dir } = useLang();
-  const { user, loading, signInWithEmail, signInWithPassword, signUpWithPassword, resendConfirmation } = useAuth();
+  const { user, loading, signInWithEmail, signInWithPassword, signUpWithPassword, resendConfirmation, resetPassword } = useAuth();
   const [view, setView] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -73,6 +73,12 @@ export default function LoginPage() {
               <Field label={t('confirmPassword')}><Input type="password" required autoComplete="new-password" minLength={6} value={confirm} onChange={(e) => setConfirm(e.target.value)} dir="ltr" /></Field>
             )}
             {view === 'signin' && <Button type="submit" size="lg" className="w-full" disabled={busy}><LogIn className="w-4 h-4" />{t('signIn')}</Button>}
+            {view === 'signin' && (
+              <button type="button" className="tap w-full text-sm text-muted-foreground hover:text-foreground py-1" disabled={busy}
+                onClick={() => { const em = email.trim(); if (!em) { setError(t('enterEmailFirst')); return; } run(async () => { await resetPassword(em); setNotice(t('resetSent')); }); }}>
+                {t('forgotPassword')}
+              </button>
+            )}
             {view === 'signup' && <Button type="submit" size="lg" className="w-full" disabled={busy}><UserPlus className="w-4 h-4" />{t('createAccount')}</Button>}
             {view === 'link' && <Button type="submit" size="lg" className="w-full" disabled={busy}><Mail className="w-4 h-4" />{t('sendLink')}</Button>}
             <div className="flex flex-col items-center gap-1 text-sm">

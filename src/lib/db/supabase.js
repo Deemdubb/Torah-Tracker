@@ -89,10 +89,12 @@ export function createSupabaseBackend(url, key) {
       },
       onChange(cb) {
         const { data } = sb.auth.onAuthStateChange((event, session) => {
-          // The email sign-in link lands on #access_token=... which HashRouter would read as a page name.
-          if (/^#(access_token|refresh_token|error)=/.test(window.location.hash)) {
-            window.location.hash = event === 'SIGNED_IN' || session ? '#/study' : '#/login';
+          // Email links land on #access_token=... which HashRouter would read as a page name.
+          const h = window.location.hash;
+          if (/^#(access_token|refresh_token|error)=/.test(h)) {
+            window.location.hash = /type=recovery/.test(h) ? '#/settings' : (event === 'SIGNED_IN' || session ? '#/study' : '#/login');
           }
+          if (event === 'PASSWORD_RECOVERY') window.location.hash = '#/settings'; // the Settings screen has the new-password box
           withProfile(session?.user).then(cb);
         });
         return () => data.subscription.unsubscribe();
@@ -105,6 +107,7 @@ export function createSupabaseBackend(url, key) {
         return !!data?.session;
       },
       async updatePassword(password) { check(await sb.auth.updateUser({ password })); },
+      async resetPassword(email) { check(await sb.auth.resetPasswordForEmail(email, { redirectTo: redirectTo() })); },
       async resendConfirmation(email) { check(await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: redirectTo() } })); },
       async signInWithGoogle() { check(await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectTo() } })); },
       async signOut() { await sb.auth.signOut(); },
