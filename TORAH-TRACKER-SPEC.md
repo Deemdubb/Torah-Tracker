@@ -90,6 +90,8 @@ Tapping a row opens a **modal dialog**:
 
 "סמן הכל" creates records for every honor not yet logged, with empty date/synagogue/notes.
 
+**Update 2026-09-07 (rebuild):** each honor is a preset range of pesukim (perek:pasuk to perek:pasuk) and shows its length in pesukim. An entry may carry its own range ("Different pesukim") for a split aliyah, and a ninth row, **הוספה / Hosafah**, records an extra aliyah with a required custom range; hosafos are shown but not counted in the 8. The Dashboard sums pesukim across all aliyos and counts the distinct pesukim of the Torah covered (out of 5,846). Data: `src/data/torahStructure.json` (Sefaria + Hebcal), columns `books.pesukim`, `parshiyot.aliyah_pesukim`, `aliyot.is_extra`, `aliyah_log.from_perek/from_pasuk/to_perek/to_pasuk`.
+
 ### 2.4 Language modes
 
 | Mode | Pill | UI text | Book / Parshah / honor names | Direction |
@@ -230,7 +232,9 @@ Total shown in the app: **2733**. No sections; the tractates sit directly under 
 
 ### 5.6 Perek range for every Aliyah of every Parshah
 
-Reference-only labels shown in grey under each Aliyah in the Study module. Stored in `base44-export/src/lib/chumashAliyotData.js` as `[startChapter, endChapter]` pairs, 7 per Parshah, for all 54 Parshiyot. Example, Parshas נח: כהן ו–ז, לוי ז, שלישי ז–ח, רביעי ח–ט, חמישי ט, שישי ט–י, שביעי יא. Copy that file as-is.
+Reference-only labels shown in grey under each Aliyah in the Study module. Stored in `base44-export/src/lib/chumashAliyotData.js` as `[startChapter, endChapter]` pairs, 7 per Parshah, for all 54 Parshiyot. Example, Parshas נח: כהן ו–ז, לוי ז, שלישי ז–ח, רביעי ח–ט, חמישי ט, שישי ט–י, שביעי יא.
+
+**Update 2026-09-07 (rebuild):** the Base44 perek ranges turned out to be rough for many parshiyot (for example נח: כהן is ו:ט–ו:כב, so perek ו only). They were replaced by pasuk-level ranges from Sefaria, checked against Hebcal, and the perek ranges are now derived from those.
 
 ### 5.7 English transliterations
 

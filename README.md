@@ -67,6 +67,18 @@ An aliyah can be received more than once. Tap the honor to see every entry, edit
 
 **Already set up Supabase before 2026-09-06?** Run `supabase/migrations/2026-09-06_repeats_and_connected_parshiyos.sql` once in the SQL Editor. It removes the old one-per-item rule and adds the new columns. New installs get all of this from `schema.sql` directly.
 
+## Aliyos by pesukim (hosafos and split aliyos)
+
+Every aliyah of every parashah knows where it starts and ends, by perek and pasuk, and every Chumash sefer knows how many pesukim each perek has. So the app can say how many pesukim an aliyah covers: under each honor you see something like `א:א–ב:ג · 34 pesukim`.
+
+Kohen, Levi, Shlishi and the rest are simply presets for a fixed range of pesukim. When you log an aliyah you can tick "Different pesukim" and type your own range: from perek and pasuk, to perek and pasuk. Use it when the aliyah was split that week, or for a **hosafah**, the extra aliyah that is added on some Shabbosos. Hosafah is its own row at the bottom of every parashah; it always asks for the range, can be logged as often as you like, and does not count towards the "all 8 aliyos" total. The app checks that the range exists in that sefer and shows the number of pesukim as you type.
+
+The Dashboard adds up the pesukim of all your aliyos and shows how many different pesukim of the Torah you were called up for, out of 5,846. The Google Sheet shows the range and the count for every aliyah entry.
+
+Where the data comes from: `scripts/fetch-torah-structure.mjs` downloads the perek lengths and the seven aliyos of every parashah from Sefaria and the maftir of every parashah from Hebcal, checks them against each other, and saves `src/data/torahStructure.json`. `scripts/gen-reference-data.mjs` then folds it into the lists. The tests check that the aliyos of every parashah follow each other with no gaps and cover each sefer from its first pasuk to its last. Admins can correct any range in Admin → sefer → parashah, and the perek lengths in Admin → sefer → Edit. V'Zos Habrachah has no usual maftir range, because on Simchas Torah the maftir is read from Bamidbar.
+
+**Already set up Supabase before 2026-09-07?** Run `supabase/migrations/2026-09-07_pesukim.sql` once in the SQL Editor. It adds the new columns, the Hosafah row, and the pesukim data for all 54 parshiyos. Until then the app shows the aliyos without pesukim and cannot save a custom range.
+
 ## Home content filters (GenTech, Livigent, TAG, Netspark and similar)
 
 Many users run a content filter that inspects every web response. Testing showed such a filter breaks long JSON answers from Supabase but lets plain text through, so the app loads all its data as plain-text CSV. If a filter still blocks the app, ask the filter company to allow `*.supabase.co` and the app's address.

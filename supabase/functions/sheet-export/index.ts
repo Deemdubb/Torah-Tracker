@@ -39,14 +39,14 @@ const WORDS = {
     first: 'פעם ראשונה', last: 'פעם אחרונה', details: 'פרטים', learned: 'לימוד', aliyah: 'עלייה', date: 'תאריך',
     synagogue: 'בית כנסת', notes: 'הערות', combined: 'פרשה כפולה', yes: 'כן', totalItems: 'סה״כ פריטים',
     learnedOnce: 'נלמדו לפחות פעם אחת', percent: 'אחוז', full: 'הושלם במלואו (פעמים)', completions: 'סה״כ השלמות',
-    learnedCount: 'נלמדו', receivedCount: 'התקבלו', learnedPrefix: 'נלמד', receivedPrefix: 'התקבל',
+    learnedCount: 'נלמדו', receivedCount: 'התקבלו', learnedPrefix: 'נלמד', receivedPrefix: 'התקבל', pesukim: 'פסוקים', range: 'טווח (פרק:פסוק)',
   },
   en: {
     type: 'Type', category: 'Category', section: 'Section', sefer: 'Sefer', parashah: 'Parashah', item: 'Item', times: 'Times',
     first: 'First time', last: 'Last time', details: 'Details', learned: 'Learned', aliyah: 'Aliyah', date: 'Date',
     synagogue: 'Synagogue', notes: 'Notes', combined: 'Double parashah', yes: 'yes', totalItems: 'Total items',
     learnedOnce: 'Learned at least once', percent: 'Percent', full: 'Learned in full (times)', completions: 'Total completions',
-    learnedCount: 'Learned', receivedCount: 'Received', learnedPrefix: 'learned', receivedPrefix: 'received',
+    learnedCount: 'Learned', receivedCount: 'Received', learnedPrefix: 'learned', receivedPrefix: 'received', pesukim: 'pesukim', range: 'Range (perek:pasuk)',
   },
 };
 
@@ -113,6 +113,27 @@ function makeDateText(names: Names, tz: string) {
   };
 }
 
+// ---------- pesukim ----------
+// A range is [fromPerek, fromPasuk, toPerek, toPasuk]. book.pesukim = pesukim per perek; parashah.aliyah_pesukim = { kohen: [...], ... }.
+type Range = [number, number, number, number];
+const isRange = (r: unknown): r is Range => Array.isArray(r) && r.length === 4 && r.every((n) => Number.isInteger(Number(n)) && Number(n) > 0);
+function ordinal(book: Row, perek: number, pasuk: number): number | null {
+  const lens: number[] = Array.isArray(book?.pesukim) ? book.pesukim.map(Number) : [];
+  if (!lens.length || perek < 1 || perek > lens.length || pasuk < 1 || pasuk > lens[perek - 1]) return null;
+  return lens.slice(0, perek - 1).reduce((s, n) => s + n, 0) + pasuk;
+}
+function countPesukim(book: Row, r: Range): number | null {
+  const a = ordinal(book, r[0], r[1]), b = ordinal(book, r[2], r[3]);
+  return a == null || b == null || b < a ? null : b - a + 1;
+}
+// The range an entry stands for: its own (a hosafah or a split aliyah) or the usual range of the honor.
+function entryRange(r: Row, p: Row | undefined): Range | null {
+  const own = [r.from_perek, r.from_pasuk, r.to_perek, r.to_pasuk].map(Number);
+  if (isRange(own)) return own as Range;
+  const preset = p?.aliyah_pesukim?.[r.aliyah_key];
+  return isRange(preset) ? (preset.map(Number) as Range) : null;
+}
+
 // ---------- helpers ----------
 function csv(headers: string[], rows: unknown[][]): string {
   const esc = (v: unknown) => { const s = v == null ? '' : String(v); return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
@@ -161,17 +182,22 @@ Deno.serve(async (req) => {
 
   const nm = (r?: Row) => (r ? (names === 'he' ? r.name_he || r.name_en : r.name_en || r.name_he) || '' : '');
   const leaf = (leafType: string, n: unknown) => (names === 'he' ? `${leafType === 'daf' ? 'דף' : 'פרק'} ${gematria(n)}` : `${leafType === 'daf' ? 'Daf' : 'Perek'} ${n}`);
+  const rangeText = (r: Range | null) => (r ? (names === 'he' ? `${gematria(r[0])}:${gematria(r[1])}–${gematria(r[2])}:${gematria(r[3])}` : `${r[0]}:${r[1]}–${r[2]}:${r[3]}`) : '');
+  // "א:א–ב:ג · 34 פסוקים" for one aliyah entry
+  const pesukimText = (r: Row, b: Row, p: Row | undefined) => { const range = entryRange(r, p); if (!range) return ''; const n = countPesukim(b, range); return `${rangeText(range)}${n != null ? ` · ${n} ${W.pesukim}` : ''}`; };
   // Where something sits in the Torah order: category, section, sefer, parashah, item. Used to sort the rows.
   const position = (bookKey: string, parKey: string, item: string) => {
     const b = book[bookKey] || {}, p = par[parKey] || {}, a = ali[item];
     return [(cat[b.category_key] || {}).sort_order ?? 0, (sec[b.section_key] || {}).sort_order ?? 0, b.sort_order ?? 0, p.sort_order ?? 0, a ? a.sort_order ?? 0 : Number(item) || 0];
   };
-  // The perakim an aliyah covers, e.g. "פרק א–ב" / "Perek 1–2"
-  const rangeText = (p: Row | undefined, aliyahKey: string) => {
-    const r = (p?.aliyah_ranges || [])[study.findIndex((a) => a.key === aliyahKey)];
-    if (!r || !r[0]) return '';
+  // What a study aliyah covers: "א:א–ב:ג · 34 פסוקים", or the old perek range when no pesukim are known
+  const studyRangeText = (p: Row | undefined, aliyahKey: string, b: Row) => {
+    const r = p?.aliyah_pesukim?.[aliyahKey];
+    if (isRange(r)) { const range = r.map(Number) as Range, n = countPesukim(b, range); return `${rangeText(range)}${n != null ? ` · ${n} ${W.pesukim}` : ''}`; }
+    const old = (p?.aliyah_ranges || [])[study.findIndex((a) => a.key === aliyahKey)];
+    if (!old || !old[0]) return '';
     const num = (n: unknown) => (names === 'he' ? gematria(n) : String(n));
-    return `${leaf('perek', r[0])}${r[1] && r[1] !== r[0] ? `–${num(r[1])}` : ''}`;
+    return `${leaf('perek', old[0])}${old[1] && old[1] !== old[0] ? `–${num(old[1])}` : ''}`;
   };
   const rows: { key: number[]; cells: unknown[] }[] = [];
   const emit = (key: number[], cells: unknown[]) => rows.push({ key, cells });
@@ -179,9 +205,10 @@ Deno.serve(async (req) => {
 
   if (type === 'aliyos') {
     const log = await all('aliyah_log', link.user_id);
-    headers = [W.sefer, W.parashah, W.aliyah, W.date, W.synagogue, W.combined, W.notes];
-    for (const r of log) emit([Date.parse(when(r)) || 0, ...position(r.book_key, r.parashah_key, r.aliyah_key)],
-      [nm(book[r.book_key]), nm(par[r.parashah_key]), nm(ali[r.aliyah_key]) || r.aliyah_key, dateText(when(r)), r.synagogue || '', r.combined ? W.yes : '', r.notes || '']);
+    headers = [W.sefer, W.parashah, W.aliyah, W.date, W.range, W.pesukim, W.synagogue, W.combined, W.notes];
+    for (const r of log) { const b = book[r.book_key] || {}, p = par[r.parashah_key], range = entryRange(r, p);
+      emit([Date.parse(when(r)) || 0, ...position(r.book_key, r.parashah_key, r.aliyah_key)],
+        [nm(b), nm(p), nm(ali[r.aliyah_key]) || r.aliyah_key, dateText(when(r)), rangeText(range), range ? countPesukim(b, range) ?? '' : '', r.synagogue || '', r.combined ? W.yes : '', r.notes || '']); }
   } else if (type === 'study') {
     const progress = await all('study_progress', link.user_id);
     headers = [W.category, W.section, W.sefer, W.parashah, W.item, W.date];
@@ -226,13 +253,13 @@ Deno.serve(async (req) => {
       const b = book[bookKey] || {}, c = cat[b.category_key] || {}, p = par[parKey], a = ali[item];
       const dates = list.map((r) => String(r.completed_at || '')).sort();
       emit([0, ...position(bookKey, parKey, item)],
-        [W.learned, nm(c), nm(sec[b.section_key]), nm(b), nm(p), a ? nm(a) : leaf(c.leaf_type, item), list.length, dateText(dates[0]), dateText(dates[dates.length - 1]), a ? rangeText(p, item) : '']);
+        [W.learned, nm(c), nm(sec[b.section_key]), nm(b), nm(p), a ? nm(a) : leaf(c.leaf_type, item), list.length, dateText(dates[0]), dateText(dates[dates.length - 1]), a ? studyRangeText(p, item, b) : '']);
     }
     for (const [k, list] of groupBy(log, (r) => `${r.book_key}|${r.parashah_key}|${r.aliyah_key}`)) {
       const [bookKey, parKey, aliyahKey] = k.split('|');
       const b = book[bookKey] || {}, p = par[parKey], a = ali[aliyahKey];
       const sorted = list.sort((x, y) => when(x).localeCompare(when(y)));
-      const detail = (r: Row, withDate: boolean) => [withDate ? dateText(when(r)) : '', r.synagogue, r.combined ? W.combined : '', r.notes].filter(Boolean).join(' · ');
+      const detail = (r: Row, withDate: boolean) => [withDate ? dateText(when(r)) : '', pesukimText(r, b, p), r.synagogue, r.combined ? W.combined : '', r.notes].filter(Boolean).join(' · ');
       emit([1, ...position(bookKey, parKey, aliyahKey)],
         [W.aliyah, nm(cat[b.category_key]), nm(sec[b.section_key]), nm(b), nm(p), a ? nm(a) : aliyahKey, sorted.length, dateText(when(sorted[0])), dateText(when(sorted[sorted.length - 1])),
           sorted.length === 1 ? detail(sorted[0], false) : sorted.map((r) => detail(r, true)).join('; ')]);

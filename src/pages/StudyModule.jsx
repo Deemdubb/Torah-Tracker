@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { BookMarked, Minus } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
+import { presetRange, countPesukim, rangeText } from '@/lib/pesukim';
 import { useData } from '@/contexts/DataContext';
 import { resolveStudyPath, countOf } from '@/lib/model';
 import { haptic } from '@/lib/haptics';
@@ -34,7 +35,7 @@ function ItemRow({ count, onAdd, onRemove, removeLabel, children, big = false })
 
 export default function StudyModule() {
   const { '*': splat } = useParams();
-  const { t, name, leafLabel, rangeLabel } = useLang();
+  const { t, name, leafLabel, rangeLabel, mode } = useLang();
   const { idx, pm, addOne, removeOne, fillAll, againAll, clearAll } = useData();
   const confirm = useConfirm();
   const parts = useMemo(() => splitParts(splat), [splat]);
@@ -127,10 +128,13 @@ export default function StudyModule() {
         <div className="space-y-2">
           {view.aliyot.map((a, i) => {
             const range = view.ranges[i];
+            const pr = presetRange(view.parashah, a.key);
+            const pesukim = pr ? countPesukim(view.book, pr) : null;
             return (
               <ItemRow key={a.key} big count={counts[i]} onAdd={() => add(a.key)} onRemove={() => remove(a.key)} removeLabel={t('removeOne')}>
                 <div className="text-xl font-display font-semibold"><Name>{name(a)}</Name></div>
-                {range && <div className="text-xs text-muted-foreground mt-0.5"><Name>{rangeLabel(range[0], range[1])}</Name></div>}
+                {pr ? <div className="text-xs text-muted-foreground mt-0.5 tabular-nums"><Name>{rangeText(mode, pr)}</Name>{pesukim != null && <> · {pesukim} {t('pesukim')}</>}</div>
+                  : range ? <div className="text-xs text-muted-foreground mt-0.5"><Name>{rangeLabel(range[0], range[1])}</Name></div> : null}
               </ItemRow>
             );
           })}

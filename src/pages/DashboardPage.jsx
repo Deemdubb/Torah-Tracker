@@ -4,17 +4,19 @@ import { Flame, BookOpen, ScrollText, CalendarDays } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useData } from '@/contexts/DataContext';
 import { categoryTotals, studyPath, allEntries } from '@/lib/model';
+import { pesukimStats } from '@/lib/pesukim';
 import ProgressRing from '@/components/ProgressRing';
 import { Card, Name } from '@/components/ui';
 
 const DAY = 86400000;
 const dayKey = (d) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
-function Stat({ label, value, icon: Icon }) {
+function Stat({ label, value, sub, icon: Icon }) {
   return (
     <Card className="p-3">
       <div className="text-xs text-muted-foreground flex items-center gap-1.5">{Icon && <Icon className="w-3.5 h-3.5" />}{label}</div>
       <div className="text-2xl font-display font-bold tabular-nums mt-0.5">{value}</div>
+      {sub && <div className="text-xs text-muted-foreground tabular-nums">{sub}</div>}
     </Card>
   );
 }
@@ -61,7 +63,7 @@ export default function DashboardPage() {
     const byYear = [...count((e) => (e.date ? String(e.date).slice(0, 4) : null))].sort((a, b) => b[0].localeCompare(a[0])).map(([k, n]) => ({ key: k, label: k, n }));
     const bySynagogue = [...count((e) => e.synagogue?.trim())].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, n]) => ({ key: k, label: k, n }));
     const recent = entries.slice().sort((a, b) => String(b.date || b.created_at || '').localeCompare(String(a.date || a.created_at || ''))).slice(0, 6);
-    return { total: entries.length, parshiyot: new Set(entries.map((e) => e.parashah_key)).size, byHonor, byYear, bySynagogue, recent };
+    return { total: entries.length, parshiyot: new Set(entries.map((e) => e.parashah_key)).size, byHonor, byYear, bySynagogue, recent, pesukim: pesukimStats(entries, idx) };
   }, [logMap, idx, name]);
 
   const describe = (r) => {
@@ -117,6 +119,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 gap-2">
         <Stat label={t('statAliyosTotal')} value={aliyos.total} />
         <Stat label={t('statParshiyotCovered')} value={aliyos.parshiyot} />
+        <Stat label={t('statPesukimTotal')} value={aliyos.pesukim.total} />
+        <Stat label={t('statTorahCovered')} value={aliyos.pesukim.distinct} sub={aliyos.pesukim.torahTotal ? `${Math.round((aliyos.pesukim.distinct / aliyos.pesukim.torahTotal) * 1000) / 10}% ${t('ofTorah')} (${aliyos.pesukim.torahTotal})` : null} />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Card className="p-4"><div className="font-semibold mb-3">{t('byHonor')}</div><Bars rows={aliyos.byHonor} /></Card>

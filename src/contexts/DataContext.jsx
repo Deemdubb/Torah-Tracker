@@ -143,7 +143,7 @@ export function DataProvider({ children }) {
     });
   }, []);
   const markAllAliyos = useCallback(async (book_key, parashah_key) => {
-    const missing = idx.aliyot.filter((a) => !(logMap.get(logKey(book_key, parashah_key, a.key))?.length));
+    const missing = idx.regularAliyot.filter((a) => !(logMap.get(logKey(book_key, parashah_key, a.key))?.length));
     for (const a of missing) await saveAliyah({ book_key, parashah_key, aliyah_key: a.key, date: null, synagogue: '', notes: '', combined: false });
   }, [idx, logMap, saveAliyah]);
 

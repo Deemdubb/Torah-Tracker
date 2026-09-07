@@ -33,7 +33,8 @@ test('buildIndex sorts every table by sort_order and indexes by key', () => {
   assert.equal(idx.sections.length, 9);
   assert.equal(idx.books.length, 139);
   assert.equal(idx.parshiyot.length, 54);
-  assert.equal(idx.aliyot.length, 8);
+  assert.equal(idx.aliyot.length, 9, 'eight honors plus the extra hosafah');
+  assert.equal(idx.regularAliyot.length, 8, 'hosafos are not regular honors');
   assert.equal(idx.studyAliyot.length, 7, 'maftir is not in study');
   assert.ok(!idx.studyAliyot.some((a) => a.key === 'maftir'));
   assert.equal(idx.sectionsOf('tanach').length, 3);
@@ -219,7 +220,7 @@ test('resolveStudyPath: leaf screen for one parashah (7 aliyot with ranges)', ()
   assert.equal(v.parashah.key, 'noach');
   assert.equal(v.aliyot.length, 7);
   assert.equal(v.ranges.length, 7);
-  assert.deepEqual(v.ranges[0], [6, 7]);
+  assert.deepEqual(v.ranges[0], [6, 6], 'Noach: Kohen is 6:9–6:22');
   assert.deepEqual(v.scope, { book_key: 'tanach-bereishis', parashah_key: 'noach' });
   assert.deepEqual(v.crumbs.map((c) => c.path), ['/study/tanach', '/study/tanach/torah', '/study/tanach/torah/tanach-bereishis']);
 });
@@ -326,8 +327,10 @@ test('resolveAliyosPath: parshiyot of a sefer and the leaf with all 8 honors', (
 
   const leaf = resolveAliyosPath(['tanach-devarim', 'shoftim'], idx, log);
   assert.equal(leaf.type, 'aliyot');
-  assert.equal(leaf.aliyot.length, 8, 'maftir is included in the Aliyos module');
-  assert.equal(leaf.aliyot.at(-1).key, 'maftir');
+  assert.equal(leaf.aliyot.length, 9, 'maftir and the extra hosafah are shown in the Aliyos module');
+  assert.equal(leaf.regular.length, 8, 'only the eight honors count towards the total');
+  assert.equal(leaf.regular.at(-1).key, 'maftir');
+  assert.equal(leaf.aliyot.at(-1).key, 'hosafah', 'the extra aliyah comes last');
   assert.equal(leaf.book.key, 'tanach-devarim');
   assert.equal(leaf.parashah.key, 'shoftim');
   assert.deepEqual(leaf.crumbs.map((c) => c.path), ['/aliyos/tanach-devarim']);
@@ -385,7 +388,7 @@ test('siblingsOf returns only the rows in the same group', () => {
   assert.equal(siblingsOf(idx, 'books', { category_key: 'gemara' }).length, 37, 'missing section_key is the same as empty');
   assert.equal(siblingsOf(idx, 'parshiyot', idx.par.noach).length, 12);
   assert.ok(siblingsOf(idx, 'parshiyot', idx.par.noach).every((p) => p.book_key === 'tanach-bereishis'));
-  assert.equal(siblingsOf(idx, 'aliyot', idx.ali.kohen).length, 8);
+  assert.equal(siblingsOf(idx, 'aliyot', idx.ali.kohen).length, 9);
   assert.deepEqual(siblingsOf(idx, 'unknown', {}), []);
 });
 

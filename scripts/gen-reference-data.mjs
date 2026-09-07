@@ -17,6 +17,8 @@ const { STUDY_CATEGORIES } = await import(pathToFileURL(join(tmp, 'studyData.js'
 const { CHUMASH_PARSHIYOT } = await import(pathToFileURL(join(tmp, 'chumashAliyotData.js')).href);
 const { ALIYOT, ALIYAH_NAMES } = await import(pathToFileURL(join(tmp, 'aliyosData.js')).href);
 const { TITLES } = await import(pathToFileURL(join(tmp, 'i18n.js')).href);
+// Perek lengths, aliyah ranges by pasuk, and maftir: see scripts/fetch-torah-structure.mjs
+const torah = JSON.parse(readFileSync(join(root, 'src/data/torahStructure.json'), 'utf8'));
 
 const slug = (s) => s.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const en = (he) => TITLES[he] || he;
@@ -58,7 +60,32 @@ STUDY_CATEGORIES.forEach((cat, ci) => {
     cat.books.forEach((b, bi) => addBook(b, bi, ''));
   }
 });
-ALIYAH_NAMES.forEach((a, i) => aliyot.push({ key: slug(en(a)), name_he: a, name_en: en(a), sort_order: i + 1, in_study: a !== 'מפטיר' }));
+ALIYAH_NAMES.forEach((a, i) => aliyot.push({ key: slug(en(a)), name_he: a, name_en: en(a), sort_order: i + 1, in_study: a !== 'מפטיר', is_extra: false }));
+// A hosafah is an extra aliyah with its own pesukim range; it is shown but not counted in "all aliyos".
+aliyot.push({ key: 'hosafah', name_he: 'הוספה', name_en: 'Hosafah', sort_order: aliyot.length + 1, in_study: false, is_extra: true });
+
+// Attach the Torah structure: books and parshiyot are in canonical order in both lists.
+const studyKeys = aliyot.filter((a) => a.in_study).map((a) => a.key);
+const chumash = books.filter((b) => b.track_mode === 'parshiyot');
+if (chumash.length !== torah.books.length) throw new Error(`expected ${torah.books.length} Chumash sefarim, found ${chumash.length}`);
+const rangeNotes = [];
+chumash.forEach((b, i) => {
+  const tb = torah.books[i];
+  b.pesukim = tb.chapters;
+  if (b.item_count !== tb.chapters.length) rangeNotes.push(`${b.name_en}: ${b.item_count} perakim in the lists, ${tb.chapters.length} in the structure`);
+  const ps = parshiyot.filter((p) => p.book_key === b.key);
+  if (ps.length !== tb.parshiyot.length) throw new Error(`${b.name_en}: ${ps.length} parshiyot in the lists, ${tb.parshiyot.length} in the structure`);
+  ps.forEach((p, j) => {
+    const tp = tb.parshiyot[j];
+    if (tp.aliyot.length !== studyKeys.length) throw new Error(`${p.name_en}: ${tp.aliyot.length} aliyos in the structure`);
+    p.aliyah_pesukim = Object.fromEntries(studyKeys.map((k, n) => [k, tp.aliyot[n]]));
+    if (tp.maftir) p.aliyah_pesukim.maftir = tp.maftir;
+    const perekRanges = tp.aliyot.map((r) => [r[0], r[2]]);
+    if (JSON.stringify(perekRanges) !== JSON.stringify(p.aliyah_ranges)) rangeNotes.push(`${p.name_en} (${tp.title}): perek ranges ${JSON.stringify(p.aliyah_ranges)} -> ${JSON.stringify(perekRanges)}`);
+    p.aliyah_ranges = perekRanges; // the perek view is derived from the pasuk view
+  });
+});
+if (rangeNotes.length) console.log('structure notes:\n  ' + rangeNotes.join('\n  '));
 
 // sanity: aliyos module parshiyot list must match study parshiyot
 const fromAliyos = ALIYOT.flatMap(s => s.parshiyot);
@@ -66,7 +93,7 @@ const fromStudy = parshiyot.map(p => p.name_he);
 const missing = fromAliyos.filter(p => !fromStudy.includes(p));
 if (missing.length) throw new Error('Parshiyot mismatch: ' + missing.join(', '));
 
-const out = { generated_from: 'base44-export (2026-09-05)', categories, sections, books, parshiyot, aliyot };
+const out = { generated_from: 'base44-export (2026-09-05) + torahStructure.json', categories, sections, books, parshiyot, aliyot };
 writeFileSync(join(root, 'src/data/referenceData.json'), JSON.stringify(out, null, 2));
 console.log({ categories: categories.length, sections: sections.length, books: books.length, parshiyot: parshiyot.length, aliyot: aliyot.length });
 console.log('keys sample:', books.slice(0, 3).map(b => b.key), parshiyot.slice(0, 3).map(p => p.key), aliyot.map(a => a.key));

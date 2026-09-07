@@ -53,7 +53,8 @@ create table if not exists public.books (
   item_count integer not null default 0,
   first_item integer not null default 1,
   track_mode text not null default 'items' check (track_mode in ('items', 'parshiyot')),
-  sort_order integer not null default 0
+  sort_order integer not null default 0,
+  pesukim jsonb                                -- Chumash only: how many pesukim each perek has, e.g. [31, 25, 24, ...]
 );
 create table if not exists public.parshiyot (
   key text primary key,
@@ -62,14 +63,16 @@ create table if not exists public.parshiyot (
   name_en text not null default '',
   sort_order integer not null default 0,
   aliyah_ranges jsonb not null default '[]'::jsonb,
-  pair_key text not null default ''            -- the other half of a double parashah, e.g. vayakhel <-> pekudei
+  pair_key text not null default '',           -- the other half of a double parashah, e.g. vayakhel <-> pekudei
+  aliyah_pesukim jsonb not null default '{}'::jsonb  -- where each aliyah starts and ends: {"kohen": [fromPerek, fromPasuk, toPerek, toPasuk], ...}
 );
 create table if not exists public.aliyot (
   key text primary key,
   name_he text not null,
   name_en text not null default '',
   sort_order integer not null default 0,
-  in_study boolean not null default true
+  in_study boolean not null default true,
+  is_extra boolean not null default false      -- a hosafah: shown, but not counted in "all aliyos", and always with its own pesukim range
 );
 
 -- ---------- each user's own data ----------
@@ -95,6 +98,8 @@ create table if not exists public.aliyah_log (
   synagogue text not null default '',
   notes text not null default '',
   combined boolean not null default false,     -- the week was read as a double parashah
+  from_perek integer, from_pasuk integer,      -- filled in for a custom range (a hosafah, or an aliyah that was split); empty = the usual range
+  to_perek integer, to_pasuk integer,
   created_at timestamptz not null default now()
   -- several entries per honor are allowed (received the same aliyah in different years)
 );

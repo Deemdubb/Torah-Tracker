@@ -169,7 +169,9 @@ export function createSupabaseBackend(url, key) {
       async load() { return fetchAll(() => sb.from('aliyah_log').select('*').order('created_at').order('id')); },
       // Several entries per honor are allowed. With an id the entry is updated, without one a new entry is added.
       async save(row) {
-        const payload = { book_key: row.book_key, parashah_key: row.parashah_key, aliyah_key: row.aliyah_key, date: row.date || null, synagogue: row.synagogue || '', notes: row.notes || '', combined: !!row.combined };
+        const num = (v) => (v == null || v === '' ? null : Number(v));
+        const payload = { book_key: row.book_key, parashah_key: row.parashah_key, aliyah_key: row.aliyah_key, date: row.date || null, synagogue: row.synagogue || '', notes: row.notes || '', combined: !!row.combined,
+          from_perek: num(row.from_perek), from_pasuk: num(row.from_pasuk), to_perek: num(row.to_perek), to_pasuk: num(row.to_pasuk) };
         if (row.id) return check(await sb.from('aliyah_log').update(payload).eq('id', row.id).select().single());
         const user_id = await uid();
         return check(await sb.from('aliyah_log').insert({ user_id, ...payload }).select().single());

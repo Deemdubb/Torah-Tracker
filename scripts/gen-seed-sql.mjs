@@ -20,12 +20,35 @@ upsert('categories', ['key', 'name_he', 'name_en', 'leaf_type', 'has_sections', 
   (r) => [q(r.key), q(r.name_he), q(r.name_en), q(r.leaf_type), b(r.has_sections), r.sort_order]);
 upsert('sections', ['key', 'category_key', 'name_he', 'name_en', 'sort_order'], data.sections,
   (r) => [q(r.key), q(r.category_key), q(r.name_he), q(r.name_en), r.sort_order]);
-upsert('books', ['key', 'category_key', 'section_key', 'name_he', 'name_en', 'item_count', 'first_item', 'track_mode', 'sort_order'], data.books,
-  (r) => [q(r.key), q(r.category_key), q(r.section_key || ''), q(r.name_he), q(r.name_en), r.item_count, r.first_item, q(r.track_mode), r.sort_order]);
-upsert('parshiyot', ['key', 'book_key', 'name_he', 'name_en', 'sort_order', 'aliyah_ranges', 'pair_key'], data.parshiyot,
-  (r) => [q(r.key), q(r.book_key), q(r.name_he), q(r.name_en), r.sort_order, `'${JSON.stringify(r.aliyah_ranges)}'::jsonb`, q(r.pair_key || '')]);
-upsert('aliyot', ['key', 'name_he', 'name_en', 'sort_order', 'in_study'], data.aliyot,
-  (r) => [q(r.key), q(r.name_he), q(r.name_en), r.sort_order, b(r.in_study)]);
+const j = (v) => (v == null ? 'null' : `'${JSON.stringify(v)}'::jsonb`);
+upsert('books', ['key', 'category_key', 'section_key', 'name_he', 'name_en', 'item_count', 'first_item', 'track_mode', 'sort_order', 'pesukim'], data.books,
+  (r) => [q(r.key), q(r.category_key), q(r.section_key || ''), q(r.name_he), q(r.name_en), r.item_count, r.first_item, q(r.track_mode), r.sort_order, j(r.pesukim)]);
+upsert('parshiyot', ['key', 'book_key', 'name_he', 'name_en', 'sort_order', 'aliyah_ranges', 'pair_key', 'aliyah_pesukim'], data.parshiyot,
+  (r) => [q(r.key), q(r.book_key), q(r.name_he), q(r.name_en), r.sort_order, j(r.aliyah_ranges), q(r.pair_key || ''), j(r.aliyah_pesukim || {})]);
+upsert('aliyot', ['key', 'name_he', 'name_en', 'sort_order', 'in_study', 'is_extra'], data.aliyot,
+  (r) => [q(r.key), q(r.name_he), q(r.name_en), r.sort_order, b(r.in_study), b(r.is_extra)]);
 
 writeFileSync(`${root}supabase/seed.sql`, lines.join('\n'));
 console.log('wrote supabase/seed.sql', lines.length, 'lines');
+
+// Update for projects created before 2026-09-07: only what the pesukim feature needs.
+const m = [
+  '-- Update for projects created before 2026-09-07. Run once in Supabase: SQL Editor -> New query -> paste -> Run. Safe to re-run.',
+  '-- 1. Every Chumash sefer knows how many pesukim each perek has.',
+  '-- 2. Every parashah knows where each aliyah (and the maftir) starts and ends, by perek and pasuk.',
+  '-- 3. A new extra aliyah "Hosafah", which always has its own pesukim range.',
+  '-- 4. An aliyah entry can carry its own range (a hosafah, or an aliyah that was split that week).',
+  '',
+  'alter table public.books add column if not exists pesukim jsonb;',
+  "alter table public.parshiyot add column if not exists aliyah_pesukim jsonb not null default '{}'::jsonb;",
+  'alter table public.aliyot add column if not exists is_extra boolean not null default false;',
+  'alter table public.aliyah_log add column if not exists from_perek integer, add column if not exists from_pasuk integer, add column if not exists to_perek integer, add column if not exists to_pasuk integer;',
+  '',
+];
+for (const a of data.aliyot.filter((a) => a.is_extra)) m.push(`insert into public.aliyot (key, name_he, name_en, sort_order, in_study, is_extra) values (${q(a.key)}, ${q(a.name_he)}, ${q(a.name_en)}, ${a.sort_order}, ${b(a.in_study)}, true) on conflict (key) do nothing;`);
+m.push('');
+for (const r of data.books.filter((r) => r.pesukim)) m.push(`update public.books set pesukim = ${j(r.pesukim)} where key = ${q(r.key)};`);
+m.push('');
+for (const r of data.parshiyot) m.push(`update public.parshiyot set aliyah_pesukim = ${j(r.aliyah_pesukim || {})}, aliyah_ranges = ${j(r.aliyah_ranges)} where key = ${q(r.key)};`);
+writeFileSync(`${root}supabase/migrations/2026-09-07_pesukim.sql`, m.join('\n') + '\n');
+console.log('wrote supabase/migrations/2026-09-07_pesukim.sql', m.length, 'lines');

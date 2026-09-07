@@ -28,9 +28,9 @@ export function parseCsv(text) {
   return rows.filter((r) => !(r.length === 1 && r[0].value === '' && !r[0].quoted));
 }
 
-const BOOL = new Set(['has_sections', 'in_study', 'combined']);
-const INT = new Set(['sort_order', 'item_count', 'first_item']);
-const JSONB = new Set(['aliyah_ranges']);
+const BOOL = new Set(['has_sections', 'in_study', 'combined', 'is_extra']);
+const INT = new Set(['sort_order', 'item_count', 'first_item', 'from_perek', 'from_pasuk', 'to_perek', 'to_pasuk']);
+const JSONB = new Set(['aliyah_ranges', 'aliyah_pesukim', 'pesukim']);
 const TIMESTAMP = new Set(['completed_at', 'created_at']);
 
 // "2026-09-06 12:46:30.655873+00" -> "2026-09-06T12:46:30.655873+00:00" (a form every browser can parse)

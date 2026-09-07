@@ -15,10 +15,11 @@ export default function AdminAliyot() {
     { name: 'name_he', label: t('nameHe'), type: 'text', required: true, dir: 'rtl' },
     { name: 'name_en', label: t('nameEn'), type: 'text', required: true, dir: 'ltr' },
     { name: 'in_study', label: t('inStudy'), type: 'checkbox' },
+    { name: 'is_extra', label: t('isExtra'), type: 'checkbox' },
     ...(editing?.key ? [{ name: 'key', label: t('key'), type: 'readonly', hint: t('keyHint') }] : []),
   ];
   const save = async (v) => {
-    const row = { ...v, in_study: !!v.in_study };
+    const row = { ...v, in_study: !!v.in_study, is_extra: !!v.is_extra };
     if (!row.key) { row.key = uniqueKey(slugify(v.name_en), idx.aliyot.map((a) => a.key)); row.sort_order = nextOrder(idx.aliyot); }
     await saveRef('aliyot', row);
   };
@@ -30,7 +31,7 @@ export default function AdminAliyot() {
         <Button size="sm" variant="soft" onClick={() => setEditing({ in_study: true })}><Plus className="w-4 h-4" />{t('addAliyah')}</Button>
       </div>
       <div className="space-y-2">
-        {idx.aliyot.map((a, i) => <AdminRow key={a.key} row={a} table="aliyot" index={i} count={idx.aliyot.length} badge={a.in_study === false ? t('tabAliyos') : null} onEdit={() => setEditing(a)} />)}
+        {idx.aliyot.map((a, i) => <AdminRow key={a.key} row={a} table="aliyot" index={i} count={idx.aliyot.length} badge={a.is_extra ? t('extraTag') : a.in_study === false ? t('tabAliyos') : null} onEdit={() => setEditing(a)} />)}
       </div>
       <RefFormModal open={!!editing} title={editing?.key ? t('editAliyah') : t('addAliyah')} fields={fields} initial={editing} onSave={save} onClose={() => setEditing(null)} />
     </div>

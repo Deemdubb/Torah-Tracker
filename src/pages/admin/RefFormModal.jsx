@@ -38,25 +38,31 @@ export default function RefFormModal({ open, title, fields, initial, onSave, onC
               <span className="text-sm">{f.label}{f.hint && <span className="block text-xs text-muted-foreground">{f.hint}</span>}</span>
             </label>
           );
-          if (f.type === 'ranges') {
-            const ranges = Array.isArray(v) ? v : [];
+          if (f.type === 'pesukim') {
+            // one row per aliyah: from perek, from pasuk, to perek, to pasuk
+            const all = v && typeof v === 'object' ? v : {};
             return (
               <Field key={f.name} label={f.label} hint={f.hint}>
                 <div className="space-y-2">
-                  {f.aliyot.map((a, i) => {
-                    const r = ranges[i] || ['', ''];
-                    const update = (j, val) => { const next = f.aliyot.map((_, k) => [...(ranges[k] || ['', ''])]); next[i][j] = val === '' ? '' : Number(val); set(f.name, next); };
+                  <div className="grid grid-cols-[minmax(0,1fr)_3.2rem_3.2rem_3.2rem_3.2rem] gap-2 text-[10px] text-muted-foreground text-center"><span /><span>{t('fromPerek')}</span><span>{t('fromPasuk')}</span><span>{t('toPerek')}</span><span>{t('toPasuk')}</span></div>
+                  {f.aliyot.map((a) => {
+                    const r = Array.isArray(all[a.key]) ? all[a.key] : ['', '', '', ''];
+                    const update = (j, val) => { const next = { ...all, [a.key]: [0, 1, 2, 3].map((k) => (k === j ? (val === '' ? '' : Number(val)) : (r[k] ?? ''))) }; set(f.name, next); };
                     return (
-                      <div key={a.key} className="grid grid-cols-[minmax(0,1fr)_4.5rem_4.5rem] items-center gap-2">
+                      <div key={a.key} className="grid grid-cols-[minmax(0,1fr)_3.2rem_3.2rem_3.2rem_3.2rem] items-center gap-2">
                         <div className="text-sm font-medium truncate"><Name>{name(a)}</Name></div>
-                        <Input type="number" min="1" inputMode="numeric" className="h-10 px-2 text-center" placeholder={t('from')} value={r[0] ?? ''} onChange={(e) => update(0, e.target.value)} />
-                        <Input type="number" min="1" inputMode="numeric" className="h-10 px-2 text-center" placeholder={t('to')} value={r[1] ?? ''} onChange={(e) => update(1, e.target.value)} />
+                        {[0, 1, 2, 3].map((j) => <Input key={j} type="number" min="1" inputMode="numeric" className="h-10 px-1 text-center text-sm" value={r[j] ?? ''} onChange={(e) => update(j, e.target.value)} />)}
                       </div>
                     );
                   })}
                 </div>
               </Field>
             );
+          }
+          if (f.type === 'textlist') {
+            // numbers separated by commas; kept as text while editing, turned into a list on save
+            const text = Array.isArray(v) ? v.join(', ') : (v ?? '');
+            return <Field key={f.name} label={f.label} hint={f.hint}><Input dir="ltr" value={text} onChange={(e) => set(f.name, e.target.value)} placeholder="31, 25, 24, …" /></Field>;
           }
           return (
             <Field key={f.name} label={f.label} hint={f.hint}>

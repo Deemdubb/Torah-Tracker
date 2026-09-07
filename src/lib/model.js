@@ -22,6 +22,7 @@ export function buildIndex(refs) {
     categories, sections, books, parshiyot, aliyot,
     cat: byKey(categories), sec: byKey(sections), book: byKey(books), par: byKey(parshiyot), ali: byKey(aliyot),
     studyAliyot: aliyot.filter((a) => a.in_study !== false),
+    regularAliyot: aliyot.filter((a) => !a.is_extra), // hosafos are extras: shown, but not part of "all aliyos"
     sectionsOf: (catKey) => sections.filter((s) => s.category_key === catKey),
     booksOf: (catKey, secKey = '') => books.filter((b) => b.category_key === catKey && (b.section_key || '') === (secKey || '')),
     booksOfCategory: (catKey) => books.filter((b) => b.category_key === catKey),
@@ -155,7 +156,7 @@ export const aliyosPath = {
 // parts = URL segments after /aliyos, e.g. ["tanach-bereishis","noach"]
 // logMap : Map<"book|parashah|aliyah", row[]>  (one honor can have several entries)
 export function resolveAliyosPath(parts, idx, logMap) {
-  const all = idx.aliyot;
+  const all = idx.regularAliyot;
   const has = (b, p, a) => (logMap.get(logKey(b.key, p.key, a.key))?.length || 0) > 0;
   const countPar = (b, p) => all.filter((a) => has(b, p, a)).length;
   if (parts.length === 0) {
@@ -175,7 +176,7 @@ export function resolveAliyosPath(parts, idx, logMap) {
   }
   const par = idx.par[parts[1]];
   if (!par || par.book_key !== book.key) return null;
-  return { type: 'aliyot', book, parashah: par, partner: par.pair_key ? idx.par[par.pair_key] || null : null, aliyot: all, crumbs: [{ row: book, path: aliyosPath.book(book) }] };
+  return { type: 'aliyot', book, parashah: par, partner: par.pair_key ? idx.par[par.pair_key] || null : null, aliyot: idx.aliyot, regular: all, crumbs: [{ row: book, path: aliyosPath.book(book) }] };
 }
 
 // Builds the in-memory count map from completion rows.

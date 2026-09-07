@@ -24,6 +24,15 @@ function loadRefs() {
     r.parshiyot = r.parshiyot.map((p) => ({ ...p, pair_key: seedPairs[p.key] || '' }));
     write(KEYS.refs, r);
   }
+  // Lists saved before pesukim existed: add perek lengths, aliyah pesukim ranges, and the extra "hosafah" aliyah once.
+  if (r.parshiyot.length && !r.parshiyot.some((p) => 'aliyah_pesukim' in p)) {
+    const seedPar = Object.fromEntries((seed.parshiyot || []).map((p) => [p.key, p]));
+    const seedBook = Object.fromEntries((seed.books || []).map((b) => [b.key, b]));
+    r.parshiyot = r.parshiyot.map((p) => ({ ...p, aliyah_pesukim: seedPar[p.key]?.aliyah_pesukim || {} }));
+    r.books = r.books.map((b) => (seedBook[b.key]?.pesukim ? { ...b, pesukim: seedBook[b.key].pesukim } : b));
+    for (const a of seed.aliyot || []) if (a.is_extra && !r.aliyot.some((x) => x.key === a.key)) r.aliyot.push({ ...a });
+    write(KEYS.refs, r);
+  }
   return r;
 }
 
